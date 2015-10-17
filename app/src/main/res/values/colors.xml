@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="cardview_dark_background">#ff202020</color>
+    <color name="cardview_light_background">#fffafafa</color>
+    <color name="cardview_shadow_end_color">#03000000</color>
+    <color name="cardview_shadow_start_color">#37000000</color>
+    <color name="colorAccent">#ffff4081</color>
+    <color name="colorPrimary">#ff9c27b0</color>
+    <color name="colorPrimaryDark">#ff7b1fa2</color>
+    <color name="colorPrimaryLight">#ffe1bee7</color>
+    <color name="divider">#ffb6b6b6</color>
+    <color name="icons">#ffffffff</color>
+    <color name="navigationBarColor">#ff000000</color>
+    <color name="textColorPrimary">#ff212121</color>
+    <color name="textColorSecondary">#ff727272</color>
+    <color name="windowBackground">#fff1f1f1</color>
+</resources>

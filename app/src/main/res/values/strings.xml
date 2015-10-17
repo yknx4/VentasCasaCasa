@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">Ventas Casa en Casa</string>
+    <string name="appbar_scrolling_view_behavior">android.support.design.widget.AppBarLayout$ScrollingViewBehavior</string>
+    <string name="transition_address">tvaddress</string>
+    <string name="transition_button_call">tvbutton_call</string>
+    <string name="transition_button_email">tvbutton_email</string>
+    <string name="transition_button_location">tvbutton_location</string>
+    <string name="transition_cardview">tvcardview</string>
+    <string name="transition_name">tvname</string>
+    <string name="transition_profile">tvprofile</string>
+    <string name="transition_toolbar">transition_toolbar</string>
+    <string name="action_settings">Settings</string>
+</resources>
