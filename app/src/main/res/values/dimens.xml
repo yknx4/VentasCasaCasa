@@ -4,4 +4,7 @@
     <dimen name="activity_vertical_margin">16dp</dimen>
     <dimen name="fab_margin">16dp</dimen>
     <dimen name="fab_default_elevation">6dip</dimen>
+    <dimen name="default_margin">16dp</dimen>
+    <dimen name="default_padding">16dp</dimen>
+    <dimen name="compat_fab_borderwidth">0dp</dimen>
 </resources>

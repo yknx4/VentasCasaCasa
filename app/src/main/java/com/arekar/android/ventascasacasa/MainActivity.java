@@ -14,6 +14,9 @@ import android.view.Menu;
 import android.view.MenuItem;
 
 import com.arekar.android.ventascasacasa.adapters.ViewPagerAdapter;
+import com.arekar.android.ventascasacasa.fragments.ClientsFragment;
+import com.arekar.android.ventascasacasa.fragments.FragmentTwoFragment;
+import com.arekar.android.ventascasacasa.fragments.ProductsFragment;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -114,9 +117,9 @@ public class MainActivity extends AppCompatActivity {
     {
 
         ViewPagerAdapter localViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-//        localViewPagerAdapter.addFragment(new FragmentTwoFragment(), "TWO");
-//        localViewPagerAdapter.addFragment(new ClientsFragment(), "THREE");
-//        localViewPagerAdapter.addFragment(new ProductsFragment(), "FOUR");
+        localViewPagerAdapter.addFragment(new FragmentTwoFragment(), "TWO");
+        localViewPagerAdapter.addFragment(new ClientsFragment(), "THREE");
+        localViewPagerAdapter.addFragment(new ProductsFragment(), "FOUR");
         paramViewPager.setAdapter(localViewPagerAdapter);
     }
 

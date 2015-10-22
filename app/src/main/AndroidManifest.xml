@@ -18,6 +18,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity android:name=".ClientDetailsActivity"/>
+        <service android:name=".service.SyncDataService"/>
+        <provider
+            android:name="com.arekar.android.ventascasacasa.provider.jsondataprovider.JsonDataProvider"
+            android:authorities="com.arekar.android.ventascasacasa.provider.json
+dataprovider"
+            android:exported="false" />
     </application>
 
 </manifest>
