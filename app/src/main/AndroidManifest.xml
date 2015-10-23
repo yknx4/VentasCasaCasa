@@ -2,6 +2,9 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.arekar.android.ventascasacasa" >
 
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CALL_PHONE"/>
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <application
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
@@ -11,20 +14,33 @@
         <activity
             android:name=".MainActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/MyMaterialTheme" >
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ClientDetailsActivity"/>
-        <service android:name=".service.SyncDataService"/>
+        <activity android:name=".ClientDetailsActivity"
+            android:theme="@style/MyMaterialLightTheme"
+            />
+
+        <service android:name=".service.SyncDataService" />
+
         <provider
-            android:name="com.arekar.android.ventascasacasa.provider.jsondataprovider.JsonDataProvider"
-            android:authorities="com.arekar.android.ventascasacasa.provider.json
-dataprovider"
+            android:name=".provider.jsondataprovider.JsonDataProvider"
+            android:authorities="com.arekar.android.ventascasacasa.provider.jsondataprovider"
             android:exported="false" />
+
+        <activity
+            android:name=".activities.ClientDetailsAct"
+            android:label="@string/title_activity_client_details"
+            android:parentActivityName=".MainActivity"
+            android:theme="@style/MyMaterialLightTheme" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.arekar.android.ventascasacasa.MainActivity" />
+        </activity>
     </application>
 
 </manifest>

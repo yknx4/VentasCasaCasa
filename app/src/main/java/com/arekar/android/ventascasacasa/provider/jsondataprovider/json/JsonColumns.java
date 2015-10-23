@@ -34,6 +34,12 @@ import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonColu
  * A human being which is part of a team.
  */
 public class JsonColumns implements BaseColumns {
+
+    public static final long ROW_CLIENTS_ID = 1;
+    public static final long ROW_PRODUCTS_ID = 2;
+    public static final long ROW_SALES_ID = 3;
+    public static final long ROW_PAYMENTS_ID = 4;
+
     public static final String TABLE_NAME = "json";
     public static final Uri CONTENT_URI = Uri.parse(JsonDataProvider.CONTENT_URI_BASE + "/" + TABLE_NAME);
 

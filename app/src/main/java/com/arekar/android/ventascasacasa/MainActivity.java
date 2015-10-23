@@ -7,6 +7,7 @@ import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
 import android.support.design.widget.TabLayout;
 import android.support.v4.view.ViewPager;
+import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
@@ -15,8 +16,10 @@ import android.view.MenuItem;
 
 import com.arekar.android.ventascasacasa.adapters.ViewPagerAdapter;
 import com.arekar.android.ventascasacasa.fragments.ClientsFragment;
+import com.arekar.android.ventascasacasa.fragments.FragmentFourFragment;
 import com.arekar.android.ventascasacasa.fragments.FragmentTwoFragment;
 import com.arekar.android.ventascasacasa.fragments.ProductsFragment;
+import com.arekar.android.ventascasacasa.service.SyncDataService;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -46,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
         this.fab.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
         this.fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View paramView) {
-                Snackbar.make(MainActivity.this.coordinatorLayout, "Clients", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(coordinatorLayout, "Clients", Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -57,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         this.fab.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
         this.fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View paramView) {
-                Snackbar.make(MainActivity.this.coordinatorLayout, "Products", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(coordinatorLayout, "Products", Snackbar.LENGTH_SHORT).show();
             }
         });
     }
@@ -65,10 +68,11 @@ public class MainActivity extends AppCompatActivity {
     {
         this.sharedPreferences = getSharedPreferences(Constants.APP_PREFERENCES, 0);
         SharedPreferences.Editor localEditor = this.sharedPreferences.edit();
-        localEditor.putString(Constants.Preferences.USER_ID, "561ae9914cfdcc0420e8252a");
+        localEditor.putString(Constants.Preferences.USER_ID, getString(R.string.static_user_id));
         localEditor.apply();
         //TODO: Uncomment when recover Data Service
-//        SyncDataService.startActionFetchAll(getApplicationContext(), getUserId());
+        SyncDataService.startActionFetchAll(getApplicationContext(), getUserId());
+
         hideFAB();
         this.tabLayout.setOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             public void onTabReselected(TabLayout.Tab paramTab) {
@@ -80,7 +84,7 @@ public class MainActivity extends AppCompatActivity {
                     default:
                         return;
                     case 0:
-                        hideFAB();
+//                        hideFAB();
                         return;
                     case 1:
                         setFloatingActionButtonForClients();
@@ -117,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
     {
 
         ViewPagerAdapter localViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        localViewPagerAdapter.addFragment(new FragmentTwoFragment(), "TWO");
+        localViewPagerAdapter.addFragment(new FragmentFourFragment(), "TWO");
         localViewPagerAdapter.addFragment(new ClientsFragment(), "THREE");
         localViewPagerAdapter.addFragment(new ProductsFragment(), "FOUR");
         paramViewPager.setAdapter(localViewPagerAdapter);
@@ -126,21 +130,19 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+
+
+
+
         setContentView(R.layout.activity_main);
-        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        setSupportActionBar(toolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        setupToolbar();
         viewPager = ((ViewPager)findViewById(R.id.viewpager));
         setupViewPager(viewPager);
         tabLayout = ((TabLayout)findViewById(R.id.tabs));
         tabLayout.setupWithViewPager(viewPager);
         setupTabIcons();
-
-
-
-
-
-
+        coordinatorLayout = (CoordinatorLayout)findViewById(R.id.coordination_layout);
         fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -154,6 +156,17 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState != null)
             setupActivityState(savedInstanceState);
     }
+
+    private void setupToolbar(){
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        // Show menu icon
+//        final ActionBar ab = getSupportActionBar();
+//        ab.setHomeAsUpIndicator(R.drawable.ic_add_black_24dp);
+//
+//        ab.setDisplayHomeAsUpEnabled(true);
+    }
+
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {

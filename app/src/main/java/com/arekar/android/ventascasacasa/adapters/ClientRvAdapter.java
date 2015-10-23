@@ -10,6 +10,7 @@ import android.support.v4.util.Pair;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -20,6 +21,7 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import com.arekar.android.ventascasacasa.ClientDetailsActivity;
 import com.arekar.android.ventascasacasa.R;
+import com.arekar.android.ventascasacasa.activities.ClientDetailsAct;
 import com.arekar.android.ventascasacasa.helpers.Methods;
 import com.arekar.android.ventascasacasa.model.AddressGPS;
 import com.arekar.android.ventascasacasa.model.Client;
@@ -39,8 +41,8 @@ public class ClientRvAdapter extends RecyclerView.Adapter<ClientRvAdapter.Client
     public ClientRvAdapter(JsonArray paramJsonArray, Activity paramActivity)
     {
         this.act = ((AppCompatActivity)paramActivity);
-        Type list = new TypeToken(){}
-                .getType();
+        Type list = new TypeToken<List<Client>>(){}.getType();
+        Log.d("CLIENTADAPTER","JSON: "+paramJsonArray.toString());
         this.clients = ((List)new Gson().fromJson(paramJsonArray, list));
     }
 
@@ -69,20 +71,19 @@ public class ClientRvAdapter extends RecyclerView.Adapter<ClientRvAdapter.Client
                 Methods.makeCall(paramView.getContext(), localClient.getPhone());
             }
         });
-        paramClientViewHolder.emailButton.setOnClickListener(new View.OnClickListener()
-        {
-            public void onClick(View paramView)
-            {
+        paramClientViewHolder.emailButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View paramView) {
                 Methods.sendMail(paramView.getContext(), localClient.getEmail());
             }
         });
         new AlphaAnimation(0.0F, 1.0F).setDuration(1000L);
-        Glide.with(paramClientViewHolder.clientImage.getContext()).load("http://lorempixel.com/256/256/people/").crossFade().into(paramClientViewHolder.clientImage);
+        //Glide.with(paramClientViewHolder.clientImage.getContext()).load("http://lorempixel.com/256/256/people/").crossFade().into(paramClientViewHolder.clientImage);
+        Glide.with(paramClientViewHolder.clientImage.getContext()).fromResource().load(R.drawable.shica).crossFade().into(paramClientViewHolder.clientImage);
         paramClientViewHolder.cardViewClient.setOnClickListener(new View.OnClickListener()
         {
             public void onClick(View paramView)
             {
-                Intent localIntent = new Intent(paramView.getContext(), ClientDetailsActivity.class);
+                Intent localIntent = new Intent(paramView.getContext(), ClientDetailsAct.class);
                 localIntent.putExtra("address", localClient.getAddress());
                 localIntent.putExtra("name", localClient.getName());
                 Object localObject2 = paramView.getContext().getResources();
@@ -94,6 +95,7 @@ public class ClientRvAdapter extends RecyclerView.Adapter<ClientRvAdapter.Client
                 Pair localPair5 = Pair.create(paramClientViewHolder.clientImage, ((Resources)localObject2).getString(R.string.transition_profile));
                 //localObject2 = Pair.create(ClientRvAdapter.this.act.findViewById(), ((Resources)localObject2).getString(2131099688));
                 Bundle tran = ActivityOptionsCompat.makeSceneTransitionAnimation((Activity)paramView.getContext(), new Pair[] { localPair, localPair1, localPair2, localPair3, localPair4, localPair5 }).toBundle();
+
                 if (Build.VERSION.SDK_INT >= 16)
                 {
                     paramView.getContext().startActivity(localIntent, tran);

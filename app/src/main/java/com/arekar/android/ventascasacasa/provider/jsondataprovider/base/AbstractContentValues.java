@@ -28,9 +28,14 @@ import android.content.Context;
 import android.content.ContentResolver;
 import android.content.ContentValues;
 import android.net.Uri;
+import android.support.annotation.NonNull;
+
+import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonColumns;
 
 public abstract class AbstractContentValues {
     protected final ContentValues mContentValues = new ContentValues();
+
+
 
     /**
      * Returns the {@code uri} argument to pass to the {@code ContentResolver} methods.

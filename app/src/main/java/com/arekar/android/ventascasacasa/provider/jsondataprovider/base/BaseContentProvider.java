@@ -89,7 +89,7 @@ public abstract class BaseContentProvider extends ContentProvider {
     @Override
     public Uri insert(Uri uri, ContentValues values) {
         String table = uri.getLastPathSegment();
-        long rowId = mSqLiteOpenHelper.getWritableDatabase().insertOrThrow(table, null, values);
+        long rowId = mSqLiteOpenHelper.getWritableDatabase().insertWithOnConflict(table, null, values,SQLiteDatabase.CONFLICT_REPLACE);
         if (rowId == -1) return null;
         String notify;
         if (((notify = uri.getQueryParameter(QUERY_NOTIFY)) == null || "true".equals(notify))) {

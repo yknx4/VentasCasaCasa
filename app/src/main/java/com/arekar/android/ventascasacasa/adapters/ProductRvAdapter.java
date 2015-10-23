@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.arekar.android.ventascasacasa.R;
+import com.arekar.android.ventascasacasa.model.Client;
 import com.arekar.android.ventascasacasa.model.Product;
 import com.bumptech.glide.DrawableRequestBuilder;
 import com.bumptech.glide.DrawableTypeRequest;
@@ -30,11 +31,8 @@ public class ProductRvAdapter extends RecyclerView.Adapter<ProductRvAdapter.Prod
 
   public ProductRvAdapter(JsonArray paramJsonArray)
   {
-    Type localType = new TypeToken()
-    {
-    }
-    .getType();
-    this.products = ((List)new Gson().fromJson(paramJsonArray, localType));
+    Type list = new TypeToken<List<Product>>(){}.getType();
+    this.products = ((List)new Gson().fromJson(paramJsonArray, list));
   }
 
   public int getItemCount()

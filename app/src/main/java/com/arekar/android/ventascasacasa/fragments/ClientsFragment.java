@@ -4,6 +4,7 @@ import android.content.Context;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
+import android.provider.SyncStateContract;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager;
@@ -17,11 +18,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.arekar.android.ventascasacasa.Constants;
 import com.arekar.android.ventascasacasa.R;
 import com.arekar.android.ventascasacasa.adapters.ClientRvAdapter;
-import com.arekar.android.ventascasacasa.jsonprovider.JsonProvider;
-import com.arekar.android.ventascasacasa.jsonprovider.json.JsonContentValues;
-import com.arekar.android.ventascasacasa.jsonprovider.json.JsonCursor;
+import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonColumns;
+import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonContentValues;
+import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonCursor;
 import com.arekar.android.ventascasacasa.service.SyncDataService;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -40,13 +42,12 @@ public class ClientsFragment extends Fragment
 
   private String getUserId()
   {
-    return this.sharedPreferences.getString("CURRENT_USER_ID", "");
+    return this.sharedPreferences.getString(Constants.Preferences.USER_ID, getString(R.string.static_user_id));
   }
 
   public Loader onCreateLoader(int paramInt, Bundle paramBundle)
   {
     JsonContentValues jcv = new JsonContentValues();
-    jcv.putID(JsonProvider.CLIENTS_RECORD_ID);
     return new CursorLoader(getContext(), jcv.uri(), null, null, null, null);
   }
 
@@ -64,10 +65,10 @@ public class ClientsFragment extends Fragment
 
   public void onLoadFinished(Loader paramLoader, Cursor paramCursor)
   {
-    if ((paramCursor.moveToFirst()) && (paramCursor.move(1)))
+    if (paramCursor.move((int) JsonColumns.ROW_CLIENTS_ID))
     {
       JsonCursor c  = new JsonCursor(paramCursor);
-      this.adapter = new ClientRvAdapter((JsonArray)new Gson().fromJson(c.getJson(), JsonArray.class), getActivity());
+      this.adapter = new ClientRvAdapter((JsonArray)new Gson().fromJson(c.getData(), JsonArray.class), getActivity());
       this.recyclerView.setAdapter(this.adapter);
       return;
     }

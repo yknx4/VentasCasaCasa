@@ -42,24 +42,25 @@ public class ClientDetailsActivity extends AppCompatActivity
   protected void onCreate(Bundle paramBundle)
   {
     super.onCreate(paramBundle);
-    setContentView(2130968603);
-    this.coordinationLayout = ((CoordinatorLayout)findViewById(2131492975));
-    this.toolbar = ((Toolbar)findViewById(2131492976));
+    setContentView(R.layout.client_details_activity);
+    coordinationLayout = ((CoordinatorLayout)findViewById(R.id.coordination_layout));
+    toolbar = ((Toolbar)findViewById(R.id.toolbar));
     setSupportActionBar(this.toolbar);
-    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-    getSupportActionBar().setDisplayShowHomeEnabled(true);
-    this.textLayout = ((LinearLayout)findViewById(2131492980));
-    this.name = ((TextView)findViewById(2131492982));
-    this.email = ((TextView)findViewById(2131492971));
-    this.circleView = ((CircleImageView)findViewById(2131492981));
-    findViewById(2131492984).setOnClickListener(this);
-    findViewById(2131492985).setOnClickListener(this);
-    findViewById(2131492986).setOnClickListener(this);
-    this.fab = ((FloatingActionButton)findViewById(2131492987));
-    this.rv = ((RecyclerView)findViewById(2131492988));
+//    getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+//    getSupportActionBar().setDisplayShowHomeEnabled(true);
+    this.textLayout = ((LinearLayout)findViewById(R.id.textLayout));
+    this.name = ((TextView)findViewById(R.id.name));
+    this.email = ((TextView)findViewById(R.id.email));
+    this.circleView = ((CircleImageView)findViewById(R.id.circleView));
+    findViewById(R.id.call_button).setOnClickListener(this);
+    findViewById(R.id.email_button).setOnClickListener(this);
+    findViewById(R.id.location_button).setOnClickListener(this);
+    this.fab = ((FloatingActionButton)findViewById(R.id.fab));
+    this.rv = ((RecyclerView)findViewById(R.id.rv));
     this.name.setText(getIntent().getStringExtra("name"));
     this.email.setText(getIntent().getStringExtra("address"));
-    Glide.with(this).load("http://lorempixel.com/256/256/people/").crossFade().into(this.circleView);
+   // Glide.with(this).load("http://lorempixel.com/256/256/people/").crossFade().into(this.circleView);
+    Glide.with(this).fromResource().load(R.drawable.shica).crossFade().into(this.circleView);
   }
 }
 

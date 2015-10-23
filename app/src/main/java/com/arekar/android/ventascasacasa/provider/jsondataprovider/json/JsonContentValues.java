@@ -97,6 +97,14 @@ public class JsonContentValues extends AbstractContentValues {
         return this;
     }
 
+    /**
+     * User id
+     */
+    public JsonContentValues putId(@NonNull long value) {
+        if (value <= 0) throw new IllegalArgumentException("id must be greater than 0");
+        mContentValues.put(JsonColumns._ID, value);
+        return this;
+    }
 
     /**
      * MD5 hash of data

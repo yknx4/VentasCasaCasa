@@ -17,11 +17,12 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.arekar.android.ventascasacasa.Constants;
 import com.arekar.android.ventascasacasa.R;
 import com.arekar.android.ventascasacasa.adapters.ProductRvAdapter;
-import com.arekar.android.ventascasacasa.jsonprovider.JsonProvider;
-import com.arekar.android.ventascasacasa.jsonprovider.json.JsonContentValues;
-import com.arekar.android.ventascasacasa.jsonprovider.json.JsonCursor;
+import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonColumns;
+import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonContentValues;
+import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonCursor;
 import com.arekar.android.ventascasacasa.service.SyncDataService;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
@@ -38,7 +39,7 @@ public class ProductsFragment extends Fragment
 
   private String getUserId()
   {
-    return this.sharedPreferences.getString("CURRENT_USER_ID", "");
+    return this.sharedPreferences.getString(Constants.Preferences.USER_ID, getString(R.string.static_user_id));
   }
 
   public Loader onCreateLoader(int paramInt, Bundle paramBundle)
@@ -50,16 +51,16 @@ public class ProductsFragment extends Fragment
   public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle)
   {
     View v = paramLayoutInflater.inflate(R.layout.products_fragment, paramViewGroup, false);
-    this.sharedPreferences = getContext().getSharedPreferences("APP_PREFERENCES", 0);
+    this.sharedPreferences = getContext().getSharedPreferences(Constants.APP_PREFERENCES, 0);
     return v;
   }
 
   public void onLoadFinished(Loader paramLoader, Cursor paramCursor)
   {
-    if ((paramCursor.moveToFirst()) && (paramCursor.move(0)))
+    if (paramCursor.move((int) JsonColumns.ROW_PRODUCTS_ID))
     {
       JsonCursor c = new JsonCursor(paramCursor);
-      this.adapter = new ProductRvAdapter((JsonArray)new Gson().fromJson(c.getJson(), JsonArray.class));
+      this.adapter = new ProductRvAdapter((JsonArray)new Gson().fromJson(c.getData(), JsonArray.class));
       this.prodRv.setAdapter(this.adapter);
       return;
     }
@@ -77,17 +78,12 @@ public class ProductsFragment extends Fragment
     super.onViewCreated(paramView, paramBundle);
     this.fabProducts = ((FloatingActionButton)paramView.findViewById(R.id.fab));
     this.prodRv = ((RecyclerView)paramView.findViewById(R.id.prod_rv));
-//    paramView = this.LOG_TAG;
-//    paramBundle = new StringBuilder().append("Rv null: ");
-    if (this.prodRv == null);
-    for (boolean bool = true; ; bool = false)
-    {
-//      Log.d(LOG_TAG, String.valueOf(bool));
+
       final LinearLayoutManager llm = new LinearLayoutManager(getContext());
       this.prodRv.setLayoutManager(llm);
       getLoaderManager().initLoader(1, null, this);
-      return;
-    }
+
+
   }
 }
 

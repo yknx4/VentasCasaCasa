@@ -6,11 +6,13 @@ import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.util.Log;
 
-import com.arekar.android.ventascasacasa.jsonprovider.json.JsonContentValues;
-import com.arekar.android.ventascasacasa.jsonprovider.json.JsonCursor;
-import com.arekar.android.ventascasacasa.jsonprovider.json.JsonSelection;
+import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonColumns;
+import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonContentValues;
+import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonCursor;
+import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonSelection;
 import com.arekar.android.ventascasacasa.rest.ClientsSpiceRequest;
 import com.arekar.android.ventascasacasa.rest.JsonSpiceRequest;
 import com.arekar.android.ventascasacasa.rest.ProductsSpiceRequest;
@@ -22,6 +24,7 @@ import com.koushikdutta.ion.Response;
 import com.koushikdutta.ion.builder.Builders.Any.B;
 
 import java.io.IOException;
+import java.security.InvalidParameterException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,12 +41,12 @@ public class SyncDataService extends IntentService
   private static final String EXTRA_PARAM2 = "com.arekar.android.ventascasacasa.service.extra.PARAM2";
   private static final String EXTRA_PARAM_USER_ID = "com.arekar.android.ventascasacasa.service.extra.PARAM_USER_ID";
   private static final String LOG_TAG = SyncDataService.class.getSimpleName();
-  private static final Map<Integer, String> paths = new HashMap(2);
+  private static final Map<Long, String> paths = new HashMap(2);
 
   static
   {
-    paths.put(Integer.valueOf(2), "/client");
-    paths.put(Integer.valueOf(1), "/product");
+    paths.put(JsonColumns.ROW_CLIENTS_ID, "/client");
+    paths.put(JsonColumns.ROW_PRODUCTS_ID, "/product");
   }
 
   public SyncDataService()
@@ -51,28 +54,36 @@ public class SyncDataService extends IntentService
     super("SyncDataService");
   }
 
-  private Updated checkIfUpdatedJson(String paramString, int paramInt)
+  private Updated checkIfUpdatedJson(String url, long row_id)
   {
-    Log.d(LOG_TAG, "chechIfUpdatedJson(): " + paramString);
-
+    Log.d(LOG_TAG, "chechIfUpdatedJson(): " + url);
+    boolean updated = false;
       Log.d(LOG_TAG, "HEAD");
     Response paramString1 = null;
     try {
-      paramString1 = (Response)((B) Ion.with(getBaseContext()).load("HEAD", paramString)).asString().withResponse().get();
+      paramString1 = (Response)((B) Ion.with(getBaseContext()).load("HEAD", url)).asString().withResponse().get();
       Log.d(LOG_TAG, "RESULT");
       String localObject = paramString1.getHeaders().getHeaders().get("Last-Modified");
       Log.d(LOG_TAG, "Last-mod: " + (String)localObject);
       SimpleDateFormat localSimpleDateFormat = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss Z", Locale.US);
-
       Date newD = localSimpleDateFormat.parse(localObject);
-      JsonSelection sel = new JsonSelection().id(new long[paramInt]);
+      JsonSelection sel = new JsonSelection().id(row_id);
       Cursor c = sel.query(this);
       if(c== null){
-        return new Updated(false,null);
+        return new Updated(true,newD);
       }
       JsonCursor jc = new JsonCursor(c);
-      if(newD.after(jc.getDate())){
-        return new Updated(true,newD);
+
+      if(jc.move((int) row_id)) {
+        if (newD.after(jc.getLastModified())) {
+          return new Updated(true, newD);
+        }
+        else {
+          return new Updated(false, null);
+        }
+      }
+      else {
+        return new Updated(true, newD);
       }
 
 
@@ -89,30 +100,28 @@ public class SyncDataService extends IntentService
 
   }
 
-  private String getProductsUrl(String paramString)
-  {
-    return getUrl(paramString, 1);
-  }
 
-  private String getUrl(String paramString, int paramInt)
+
+  private String getUrl(@NonNull String userid, long row_id)
   {
-    GenericUrl localGenericUrl = new GenericUrl("http://sales-yknx4.rhcloud.com" + (String)paths.get(Integer.valueOf(paramInt)));
-    localGenericUrl.put("user_id", paramString);
+    if(userid.isEmpty()) throw new InvalidParameterException("userid cannot be empty");
+    GenericUrl localGenericUrl = new GenericUrl("http://sales-yknx4.rhcloud.com" + paths.get(row_id));
+    localGenericUrl.put("user_id", userid);
     return localGenericUrl.build();
   }
 
-  private void handleActionFetchClients(String paramString)
+  private void handleActionFetchClients(String userId)
   {
-    Updated localUpdated = checkIfUpdatedJson(getUrl(paramString, 2), 2);
+    Updated localUpdated = checkIfUpdatedJson(getUrl(userId, JsonColumns.ROW_CLIENTS_ID), JsonColumns.ROW_CLIENTS_ID);
     if (localUpdated.isUpdated())
-      syncData(paramString, localUpdated.getWhen(), 2, new ClientsSpiceRequest(paramString));
+      syncData(userId, localUpdated.getWhen(), JsonColumns.ROW_CLIENTS_ID, new ClientsSpiceRequest(userId));
   }
 
-  private void handleActionFetchProducts(String paramString)
+  private void handleActionFetchProducts(String userid)
   {
-    Updated localUpdated = checkIfUpdatedJson(getProductsUrl(paramString), 1);
+    Updated localUpdated = checkIfUpdatedJson(getUrl(userid,JsonColumns.ROW_PRODUCTS_ID), JsonColumns.ROW_PRODUCTS_ID);
     if (localUpdated.isUpdated())
-      syncData(paramString, localUpdated.getWhen(), 1, new ProductsSpiceRequest(paramString));
+      syncData(userid, localUpdated.getWhen(), JsonColumns.ROW_PRODUCTS_ID, new ProductsSpiceRequest(userid));
   }
 
   public static void startActionFetchAll(Context paramContext, String paramString)
@@ -141,8 +150,9 @@ public class SyncDataService extends IntentService
     paramContext.startService(localIntent);
   }
 
-  private void syncData(String paramString, Date paramDate, int paramInt, JsonSpiceRequest paramJsonSpiceRequest)
+  private void syncData(String userid, Date date, long row_id, JsonSpiceRequest paramJsonSpiceRequest)
   {
+    if(row_id<0) throw new InvalidParameterException("ID must be greater than 0");
     Log.d(LOG_TAG, "Start");
     ContentResolver cr = getContentResolver();
     try
@@ -151,10 +161,11 @@ public class SyncDataService extends IntentService
       String js = new Gson().toJson(ja);
       Log.d(LOG_TAG, "Json: " + paramJsonSpiceRequest);
       JsonContentValues localJsonContentValues = new JsonContentValues();
-      localJsonContentValues.putID(paramInt);
-      localJsonContentValues.putJson(js);
-      localJsonContentValues.putDate(paramDate);
+      localJsonContentValues.putId(row_id);
+      localJsonContentValues.putData(js);
+      localJsonContentValues.putLastModified(date);
       localJsonContentValues.putMd5("");
+      localJsonContentValues.putUserId(userid);
       Uri r = localJsonContentValues.insert(cr);
       Log.d(LOG_TAG, "Response: " + r);
       Log.d(LOG_TAG, "Finished");
@@ -172,6 +183,7 @@ public class SyncDataService extends IntentService
 
     String act = paramIntent.getAction();
     String userId = paramIntent.getStringExtra(EXTRA_PARAM_USER_ID);
+    Log.d(LOG_TAG,"Intent with userid: "+userId);
 
     switch (act){
       case ACTION_FETCH_PRODUCTS:
@@ -196,6 +208,11 @@ public class SyncDataService extends IntentService
     {
       this.updated = paramDate;
       this.when = arg3;
+    }
+    public Updated(boolean param){
+      this.updated = param;
+
+      this.when = null;
     }
 
     public Date getWhen()

@@ -14,4 +14,7 @@
     <color name="textColorPrimary">#ff212121</color>
     <color name="textColorSecondary">#ff727272</color>
     <color name="windowBackground">#fff1f1f1</color>
+
+    <color name="colorPrimaryGray">#f1f1f1</color>
+    <color name="colorPrimaryGrayDark">#d2d2d2</color>
 </resources>
