@@ -42,6 +42,7 @@ public class ProductsSpiceRequest extends GoogleHttpClientSpiceRequest<JsonArray
     Ln.d("Call web service " + this.baseUrl, new Object[0]);
     Object localObject = new GenericUrl(this.baseUrl);
     ((GenericUrl)localObject).put("user_id", this.userid);
+    ((GenericUrl)localObject).put("sort", "name");
     Ln.d("User: " + this.userid, new Object[0]);
     Ln.d("Generic URL: " + ((GenericUrl)localObject).toString(), new Object[0]);
     localObject = getHttpRequestFactory().buildGetRequest((GenericUrl)localObject);

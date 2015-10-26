@@ -1,13 +1,11 @@
 package com.arekar.android.ventascasacasa.activities;
 
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Activity;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -19,30 +17,28 @@ import android.support.design.widget.Snackbar;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.ImageButton;
 import android.support.design.widget.TextInputLayout;
 import android.widget.EditText;
 import android.widget.Button;
+import android.widget.Spinner;
 import android.widget.Toast;
 
 import com.arekar.android.ventascasacasa.R;
-import com.arekar.android.ventascasacasa.helpers.Methods;
-import com.arekar.android.ventascasacasa.helpers.RealPathUtil;
 import com.arekar.android.ventascasacasa.imgurmodel.ImageResponse;
 import com.arekar.android.ventascasacasa.imgurmodel.Upload;
-import com.arekar.android.ventascasacasa.model.Client;
+import com.arekar.android.ventascasacasa.model.Product;
 import com.arekar.android.ventascasacasa.service.SyncDataService;
 import com.arekar.android.ventascasacasa.service.UploadService;
 import com.bumptech.glide.Glide;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
-import com.mobsandgeeks.saripaar.annotation.Digits;
-import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
+
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -51,64 +47,152 @@ import retrofit.Callback;
 import retrofit.RetrofitError;
 import retrofit.client.Response;
 
-public class AddClientActivity extends BaseActivity implements View.OnClickListener, Validator.ValidationListener {
+public class AddProductActivity extends BaseActivity implements View.OnClickListener, Validator.ValidationListener {
 
-    private static final int YOUR_SELECT_PICTURE_REQUEST_CODE = 43;
+    private static final int YOUR_SELECT_PICTURE_REQUEST_CODE = 85;
+    public static final String BUNDLE_PRODUCT = "BUNDLE_PRODUCT";
+    private CoordinatorLayout coordinationLayout;
     private Toolbar toolbar;
     private TextInputLayout inputLayoutName;
-    private TextInputLayout inputLayoutEmail;
-    private TextInputLayout inputLayoutPhone;
-    private TextInputLayout inputLayoutAddress;
-    private ImageButton img_btn;
-    private Validator validator;
-    private CoordinatorLayout coord;
+    private TextInputLayout inputLayoutBrand;
+    private TextInputLayout inputLayoutModel;
+    private TextInputLayout inputLayoutPrice;
+    private TextInputLayout inputLayoutCost;
+    private TextInputLayout inputLayoutDescription;
     private Uri selectedImageUri;
-    private boolean update = false;
-    public static final String BUNDLE_CLIENT = "BUNDLE_CLIENT";
-    private Client currentClient;
+    private ImageButton img_btn;
+    private Button btn;
+    @NotEmpty
+    private EditText inputName;
+    @NotEmpty
+    private EditText inputBrand;
+    @NotEmpty
+    private EditText inputModel;
+    @NotEmpty
+    private EditText inputPrice;
+    @NotEmpty
+    private EditText inputCost;
+    @NotEmpty
+    private EditText inputDescription;
+    private Validator validator;
+    private boolean update;
+    private Product currentProduct;
+    private Spinner spn;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_add_client);
-
+        setContentView(R.layout.activty_add_product);
+        coordinationLayout = (CoordinatorLayout) findViewById(R.id.coordination_layout);
         toolbar = (Toolbar) findViewById(R.id.toolbar);
         img_btn = (ImageButton) findViewById(R.id.image_button);
         img_btn.setOnClickListener(this);
         inputLayoutName = (TextInputLayout) findViewById(R.id.input_layout_name);
-        inputLayoutEmail = (TextInputLayout) findViewById(R.id.input_layout_email);
-        inputLayoutPhone = (TextInputLayout) findViewById(R.id.input_layout_phone);
-        inputLayoutAddress = (TextInputLayout) findViewById(R.id.input_layout_address);
-        inputName =  (EditText) findViewById(R.id.input_name);
-        inputAddress =(EditText) findViewById(R.id.input_address);
-        inputEmail =  (EditText) findViewById(R.id.input_email);
-        inputPhone =  (EditText) findViewById(R.id.input_phone);
-        coord = (CoordinatorLayout) findViewById(R.id.coordination_layout);
-         findViewById(R.id.btn_signup).setOnClickListener(this);
+        inputName = inputLayoutName.getEditText();
+        inputLayoutBrand = (TextInputLayout) findViewById(R.id.input_layout_brand);
+        inputBrand = inputLayoutBrand.getEditText();
+        inputLayoutModel = (TextInputLayout) findViewById(R.id.input_layout_model);
+        inputModel = inputLayoutModel.getEditText();
+        inputLayoutPrice = (TextInputLayout) findViewById(R.id.input_layout_price);
+        inputPrice = inputLayoutPrice.getEditText();
+        inputLayoutCost = (TextInputLayout) findViewById(R.id.input_layout_cost);
+        inputCost = inputLayoutCost.getEditText();
+        inputLayoutDescription = (TextInputLayout) findViewById(R.id.input_layout_description);
+        inputDescription = inputLayoutDescription.getEditText();
+        btn = (Button) findViewById(R.id.btn_signup);
+        spn = (Spinner) findViewById(R.id.spinner);
+        ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(this,
+                R.array.product_colors, android.R.layout.simple_spinner_item);
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        spn.setAdapter(adapter);
+
+
+        btn.setOnClickListener(this);
         validator = new Validator(this);
         validator.setValidationListener(this);
         Intent intent = getIntent();
         if (intent!=null){
             Bundle extras = intent.getExtras();
             if(extras!=null) {
-                Client cl = extras.getParcelable(BUNDLE_CLIENT);
+                Product cl = extras.getParcelable(BUNDLE_PRODUCT);
                 if (cl != null) {
                     update = true;
-                    currentClient = cl;
+                    currentProduct = cl;
                     Glide.with(this).load(cl.getImage()).crossFade().into(img_btn);
-                    loadClient();
+                    loadProduct();
                 }
             }
         }
+    }
 
+    private void loadProduct() {
+        inputDescription.setText(currentProduct.getDescription());
+        inputName.setText(currentProduct.getName());
+        inputCost.setText(currentProduct.getCost().toString());
+        inputBrand.setText(currentProduct.getBrand());
+        inputPrice.setText(currentProduct.getPrice().toString());
+        inputModel.setText(currentProduct.getModel());
+        spn.setSelection(getColorPosition(currentProduct.getColor()));
 
     }
 
-    private void loadClient() {
-        inputEmail.setText(currentClient.getEmail());
-        inputPhone.setText(currentClient.getPhone());
-        inputAddress.setText(currentClient.getAddress());
-        inputName.setText(currentClient.getName());
+    private int getColorPosition(String color){
+        String[] colors = getResources().getStringArray(R.array.product_colors);
+        int pos = 0;
+        for(String colorS:colors){
+            if(colorS.equals(color)) return pos;
+            pos++;
+        }
+
+        return  0;
+    }
+
+
+
+
+    @Override
+    public Messenger getMessenger() {
+        return new Messenger(paymentServiceHandler);
+    }
+
+    private Upload upload; // Upload object containging image and meta data
+    private File chosenFile; //chosen file from intent
+
+    @Override
+    public void onClick(View view) {
+        switch (view.getId()) {
+            case R.id.image_button:
+                openImageIntent();
+                break;
+            case R.id.btn_signup:
+                //TODO implement
+                validator.validate();
+                break;
+        }
+    }
+
+    private EditText getInputName(){
+        return (EditText) findViewById(R.id.input_name);
+    }
+
+    private EditText getInputBrand(){
+        return (EditText) findViewById(R.id.input_brand);
+    }
+
+    private EditText getInputModel(){
+        return (EditText) findViewById(R.id.input_model);
+    }
+
+    private EditText getInputPrice(){
+        return (EditText) findViewById(R.id.input_price);
+    }
+
+    private EditText getInputCost(){
+        return (EditText) findViewById(R.id.input_cost);
+    }
+
+    private EditText getInputDescription(){
+        return (EditText) findViewById(R.id.input_description);
     }
 
     private Uri outputFileUri;
@@ -165,8 +249,6 @@ public class AddClientActivity extends BaseActivity implements View.OnClickListe
                         isCamera = action.equals(android.provider.MediaStore.ACTION_IMAGE_CAPTURE);
                     }
                 }
-
-
                 if (isCamera) {
                     selectedImageUri = outputFileUri;
                 } else {
@@ -180,63 +262,13 @@ public class AddClientActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
-
-    @Override
-    public Messenger getMessenger() {
-        return new Messenger(paymentServiceHandler);
-    }
-
-
-
-    private Upload upload; // Upload object containging image and meta data
-    private File chosenFile; //chosen file from intent
-
-    @Override
-    public void onClick(View view) {
-        switch (view.getId()) {
-            case R.id.image_button:
-                openImageIntent();
-                break;
-            case R.id.btn_signup:
-                //TODO implement
-                validator.validate();
-                break;
-        }
-    }
-
-    @NotEmpty
-    EditText inputName;
-    @NotEmpty
-    @Email
-    EditText inputEmail;
-    @NotEmpty
-    EditText inputPhone;
-    @NotEmpty
-    EditText inputAddress;
-
-    private EditText getInputName(){
-        return (EditText) findViewById(R.id.input_name);
-    }
-
-    private EditText getInputEmail(){
-        return (EditText) findViewById(R.id.input_email);
-    }
-
-    private EditText getInputPhone(){
-        return (EditText) findViewById(R.id.input_phone);
-    }
-
-    private EditText getInputAddress(){
-        return (EditText) findViewById(R.id.input_address);
-    }
-
     @Override
     public void onValidationSucceeded() {
 
-        Snackbar.make(coord,"Yay! Now creating!", Snackbar.LENGTH_SHORT).show();
+        Snackbar.make(coordinationLayout, "Yay! Now creating!", Snackbar.LENGTH_SHORT).show();
         findViewById(R.id.btn_signup).setEnabled(false);
         if (selectedImageUri == null){
-            addClient();
+            addProduct();
             return;
         }
         upload = new Upload();
@@ -246,7 +278,7 @@ public class AddClientActivity extends BaseActivity implements View.OnClickListe
             e.printStackTrace();
         }
         upload.title = getInputName().getText().toString()+ Math.round(Math.random() * 1000);
-        upload.description = getInputName().getText().toString()+getInputEmail().getText().toString();
+        upload.description = getInputName().getText().toString()+getInputDescription().getText().toString();
         new UploadService(this).Execute(upload, new UiCallback());
 
     }
@@ -259,38 +291,41 @@ public class AddClientActivity extends BaseActivity implements View.OnClickListe
         @Override
         public void success(ImageResponse imageResponse, Response response) {
             imgUrl = imageResponse.data.link;
-            addClient();
+            addProduct();
         }
 
         @Override
         public void failure(RetrofitError error) {
 
             if (error == null) {
-                Snackbar.make(coord, "No internet connection", Snackbar.LENGTH_SHORT).show();
+                Snackbar.make(coordinationLayout, "No internet connection", Snackbar.LENGTH_SHORT).show();
             }
             else {
-                Snackbar.make(coord, "Couldn't upload photo", Snackbar.LENGTH_SHORT).show();
-                addClient();
+                Snackbar.make(coordinationLayout, "Couldn't upload photo", Snackbar.LENGTH_SHORT).show();
+                addProduct();
             }
         }
     }
     private Handler paymentServiceHandler = new IncomingHandler(this);
-    private void addClient(){
-        Client newClient = new Client();
-        if(update) newClient = currentClient;
-        newClient.setUserId(getUserId());
-        newClient.setAddress(getInputAddress().getText().toString());
-        newClient.setEmail(getInputEmail().getText().toString());
-        if(!imgUrl.isEmpty())newClient.setImage(imgUrl);
-        else if(!update) newClient.setImage("http://lorempixel.com/200/200/people/");
-        newClient.setName(getInputName().getText().toString());
-        newClient.setPhone(getInputPhone().getText().toString());
-        newClient.setEnabled(true);
+    private void addProduct(){
+        Product newProduct = new Product();
+        if(update) newProduct = currentProduct;
+        newProduct.setUserId(getUserId());
+        newProduct.setBrand(getInputBrand().getText().toString());
+        newProduct.setName(getInputName().getText().toString());
+        newProduct.setColor(spn.getSelectedItem().toString());
+        newProduct.setDescription(getInputDescription().getText().toString());
+        newProduct.setModel(getInputModel().getText().toString());
+        newProduct.setCost(Double.parseDouble(getInputCost().getText().toString()));
+        newProduct.setPrice(Double.parseDouble(getInputPrice().getText().toString()));
+        if(!imgUrl.isEmpty())newProduct.setImage(imgUrl);
+        else if(!update) newProduct.setImage("http://lorempixel.com/200/200/");
+
         if(update){
-            SyncDataService.startActionUpdateClient(this, newClient, getMessenger(), getToken());
+            SyncDataService.startActionUpdateProduct(this, newProduct, getMessenger());
         }
         else {
-            SyncDataService.startActionAddClient(this, newClient, getMessenger());
+            SyncDataService.startActionAddProduct(this, newProduct, getMessenger());
         }
 
 
@@ -302,11 +337,11 @@ public class AddClientActivity extends BaseActivity implements View.OnClickListe
         Bundle data = msg.getData();
         String type = data.getString(SyncDataService.MSG_PARAM_TYPE);
         String msgtxt = data.getString("message");
-        Log.v(TAG,"Response: "+msgtxt);
+        Log.v(TAG, "Response: " + msgtxt);
         if (type == null) return;
 
         switch (type) {
-            case SyncDataService.MSG_TYPE_CLIENT:
+            case SyncDataService.MSG_TYPE_PRODUCT:
 
                 Boolean add = data.getBoolean(SyncDataService.MSG_ADDED, false);
 
@@ -315,9 +350,9 @@ public class AddClientActivity extends BaseActivity implements View.OnClickListe
 
                     snackText = getInputName().getText().toString() + " added.";
                     if(update) snackText = getInputName().getText().toString() + " updated.";
-                    SyncDataService.startActionFetchClients(this, getUserId());
+                    SyncDataService.startActionFetchProducts(this, getUserId());
                 }
-                Snackbar snack = Snackbar.make(coord, snackText, Snackbar.LENGTH_LONG);
+                Snackbar snack = Snackbar.make(coordinationLayout, snackText, Snackbar.LENGTH_LONG);
                 snack.show();
                 thread.start();
                 Log.v(TAG, msgtxt);
@@ -333,14 +368,14 @@ public class AddClientActivity extends BaseActivity implements View.OnClickListe
         public void run() {
             try {
                 Thread.sleep(3500); // As I am using LENGTH_LONG in Toast
-                AddClientActivity.this.finish();
+                AddProductActivity.this.finish();
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
     };
 
-    private static final String TAG = "AddClientActivity";
+    private static final String TAG = "AddProductActivity";
 
     @Override
     public void onValidationFailed(List<ValidationError> errors) {
@@ -352,7 +387,7 @@ public class AddClientActivity extends BaseActivity implements View.OnClickListe
             if (view instanceof EditText) {
                 ((EditText) view).setError(message);
             } else {
-                Snackbar.make(coord, message, Snackbar.LENGTH_LONG).show();
+                Snackbar.make(coordinationLayout, message, Snackbar.LENGTH_LONG).show();
             }
         }
     }

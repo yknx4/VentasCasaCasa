@@ -73,7 +73,7 @@ public class SaleController {
 
 
     public Date getNextPayment(){
-        Date firstDay = new Date(Integer.parseInt(item.getDate()));
+        Date firstDay = new Date(Long.parseLong(item.getDate()));
         Date currentDate = new Date();
         ReadableInstant first = new Instant(firstDay.getTime());
         ReadableInstant current = new Instant(currentDate.getTime());

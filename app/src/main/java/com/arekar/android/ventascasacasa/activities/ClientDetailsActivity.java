@@ -2,6 +2,8 @@ package com.arekar.android.ventascasacasa.activities;
 
 import android.app.SharedElementCallback;
 
+import android.content.Context;
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Build;
 import android.os.Bundle;
@@ -54,6 +56,7 @@ public class ClientDetailsActivity extends BaseActivity implements LoaderManager
     private static final int LOADER_SALES = 995;
     private static final int LOADER_PAYMENTS = 123;
     private static final String TAG = "ClientDetailsActivity";
+    public static final String CLIENT_ID = "CLIENT_ID";
     private String client_id;
     private String name;
     private String address;
@@ -79,12 +82,16 @@ public class ClientDetailsActivity extends BaseActivity implements LoaderManager
         coordinatorLayout = (CoordinatorLayout) findViewById(R.id.coordination_layout);
 
 
+        final Context context = this;
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+//                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
+//                        .setAction("Action", null).show();
+                Intent open = new Intent(context, AddSaleActivity.class);
+                open.putExtra(CLIENT_ID,current.getId());
+                startActivity(open);
             }
         });
 

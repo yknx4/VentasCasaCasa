@@ -17,6 +17,10 @@
         <activity android:name=".activities.AddClientActivity"
             android:label="@string/app_name"
             android:theme="@style/MyMaterialTheme.NoActionBar"/>
+        <activity android:name=".activities.AddProductActivity"
+            android:theme="@style/MyMaterialTheme.NoActionBar"/>
+        <activity android:name=".activities.AddSaleActivity"
+            android:theme="@style/MyMaterialTheme.NoActionBar"/>
         <activity
             android:name=".activities.MainActivity"
             android:label="@string/app_name"

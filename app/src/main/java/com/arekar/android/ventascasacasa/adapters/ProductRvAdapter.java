@@ -4,6 +4,7 @@ import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.RecyclerView.Adapter;
 import android.support.v7.widget.RecyclerView.ViewHolder;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -28,7 +29,7 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.List;
 
-public class ProductRvAdapter extends RecyclerView.Adapter<ProductRvAdapter.ProductViewHolder>
+public class ProductRvAdapter extends AbstractAdapter<ProductRvAdapter.ProductViewHolder>
 {
   List<Product> products;
   WeakReference<BaseActivity> act;
@@ -43,6 +44,13 @@ public class ProductRvAdapter extends RecyclerView.Adapter<ProductRvAdapter.Prod
     this.act = new WeakReference<>(act);
   }
 
+  public Product getProductById(String id){
+    if(products==null || products.size()==0) return null;
+    for(Product prod: products){
+      if(prod.getId().equals(id)) return prod;
+    }
+    return null;
+  }
   public int getItemCount()
   {
     return this.products.size();
@@ -50,18 +58,27 @@ public class ProductRvAdapter extends RecyclerView.Adapter<ProductRvAdapter.Prod
 
   public void onBindViewHolder(ProductViewHolder paramProductViewHolder, int paramInt)
   {
-    Product localProduct = (Product)this.products.get(paramInt);
+    final Product localProduct = (Product)this.products.get(paramInt);
+
+    paramProductViewHolder.cardViewProd.setOnLongClickListener(new View.OnLongClickListener() {
+      @Override
+      public boolean onLongClick(View v) {
+        setPosition(localProduct.getId());
+        return false;
+      }
+    });
+
     paramProductViewHolder.productName.setText(((Product)this.products.get(paramInt)).getName());
     paramProductViewHolder.productBrand.setText(((Product)this.products.get(paramInt)).getBrand());
     paramProductViewHolder.productPrice.setText(((Product)this.products.get(paramInt)).getPrice().toString());
     paramProductViewHolder.productDescription.setText(((Product)this.products.get(paramInt)).getDescription());
     new AlphaAnimation(0.0F, 1.0F).setDuration(1000L);
-    if (Math.random() > 0.5D)
-    {
-      Glide.with(paramProductViewHolder.productImage.getContext()).load("http://lorempixel.com/128/128/").crossFade().into(paramProductViewHolder.productImage);
-      return;
-    }
-    Glide.with(paramProductViewHolder.productImage.getContext()).load("http://lorempixel.com/256/256/").crossFade().into(paramProductViewHolder.productImage);
+//    if (Math.random() > 0.5D)
+//    {
+//      Glide.with(paramProductViewHolder.productImage.getContext()).load("http://lorempixel.com/128/128/").crossFade().into(paramProductViewHolder.productImage);
+//      return;
+//    }
+    Glide.with(paramProductViewHolder.productImage.getContext()).load(localProduct.getImage()).crossFade().into(paramProductViewHolder.productImage);
   }
 
   public ProductViewHolder onCreateViewHolder(ViewGroup paramViewGroup, int paramInt)
@@ -74,8 +91,7 @@ public class ProductRvAdapter extends RecyclerView.Adapter<ProductRvAdapter.Prod
     super.onViewRecycled(paramProductViewHolder);
   }
 
-  public static class ProductViewHolder extends RecyclerView.ViewHolder
-  {
+  public static class ProductViewHolder extends RecyclerView.ViewHolder implements View.OnCreateContextMenuListener {
     CardView cardViewProd;
     TextView productBrand;
     TextView productDescription;
@@ -92,6 +108,14 @@ public class ProductRvAdapter extends RecyclerView.Adapter<ProductRvAdapter.Prod
       this.productBrand = ((TextView)paramView.findViewById(R.id.product_brand));
       this.productPrice = ((TextView)paramView.findViewById(R.id.product_price));
       this.productDescription = ((TextView)paramView.findViewById(R.id.product_description));
+      cardViewProd.setOnCreateContextMenuListener(this);
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+      menu.setHeaderTitle("Choose an action");
+      menu.add(0, v.getId(), 0, "Edit");//groupId, itemId, order, title
+      menu.add(0, v.getId(), 0, "Delete");
     }
   }
 }

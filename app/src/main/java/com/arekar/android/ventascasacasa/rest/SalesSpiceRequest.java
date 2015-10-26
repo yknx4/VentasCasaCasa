@@ -3,7 +3,9 @@ package com.arekar.android.ventascasacasa.rest;
 import android.support.annotation.NonNull;
 
 import com.arekar.android.ventascasacasa.Constants;
+import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.GenericUrl;
+import com.google.api.client.http.HttpContent;
 import com.google.api.client.http.HttpRequest;
 import com.google.api.client.http.HttpResponse;
 import com.google.api.client.json.gson.GsonFactory;
@@ -76,5 +78,22 @@ public class SalesSpiceRequest extends GoogleHttpClientSpiceRequest<JsonArray> i
         super(JsonArray.class);
         userid = paramString;
         setHttpRequestFactory(GoogleHttpClientSpiceService.createRequestFactory());
+    }
+
+    public JsonElement insertData(String element) throws IOException{
+        String url = baseUrl;
+        Ln.d("Call web service " + url);
+        GenericUrl gUrl = new GenericUrl(url);
+        Ln.d("User: " + userid);
+        Ln.d("Generic URL: " + gUrl.toString());
+        Ln.d("Inserting: "+element );
+        HttpContent json = ByteArrayContent.fromString("application/json", element);
+        HttpRequest httpRequest = getHttpRequestFactory().buildPostRequest(gUrl, json);
+        httpRequest.setParser(new GsonFactory().createJsonObjectParser());
+        //httpRequest.setHeaders(httpRequest.getHeaders().setContentType("application/json"));
+        HttpResponse httpResponse = httpRequest.execute();
+        JsonElement response = new Gson().fromJson(new InputStreamReader(httpResponse.getContent()), JsonElement.class);
+        Ln.d("JSON Response: "+response.toString());
+        return response;
     }
 }

@@ -44,9 +44,9 @@ public class MainActivity extends BaseActivity {
 
     private void hideFAB()
     {
+        fab.hide();
         this.fab.setBackgroundTintList(getResources().getColorStateList(R.color.colorPrimary));
         this.fab.setOnClickListener(null);
-        fab.hide();
     }
 
     public static int REQUEST_CODE_GET_JSON = 1;
@@ -61,6 +61,7 @@ public class MainActivity extends BaseActivity {
     
     private void setFloatingActionButtonForClients()
     {
+        fab.setOnClickListener(null);
         fab.show();
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             fab.setForegroundTintList(getResources().getColorStateList(R.color.primary_light));
@@ -78,14 +79,17 @@ public class MainActivity extends BaseActivity {
 
     private void setFloatingActionButtonForProducts()
     {
+        fab.setOnClickListener(null);
         fab.show();
         this.fab.setBackgroundTintList(getResources().getColorStateList(R.color.primary));
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             fab.setForegroundTintList(getResources().getColorStateList(R.color.primary_light));
         }
+        final Context ctx = this;
         this.fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View paramView) {
-                Snackbar.make(coordinatorLayout, "Products", Snackbar.LENGTH_SHORT).show();
+                Intent intent = new Intent(ctx, AddProductActivity.class);
+                startActivity(intent);
             }
         });
     }

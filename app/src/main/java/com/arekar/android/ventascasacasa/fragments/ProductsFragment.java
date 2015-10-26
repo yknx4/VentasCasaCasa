@@ -1,6 +1,7 @@
 package com.arekar.android.ventascasacasa.fragments;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.os.Bundle;
@@ -14,11 +15,14 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.arekar.android.ventascasacasa.Constants;
 import com.arekar.android.ventascasacasa.R;
+import com.arekar.android.ventascasacasa.activities.AddClientActivity;
+import com.arekar.android.ventascasacasa.activities.AddProductActivity;
 import com.arekar.android.ventascasacasa.adapters.ProductRvAdapter;
 import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonColumns;
 import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonContentValues;
@@ -82,8 +86,26 @@ public class ProductsFragment extends Fragment
       final LinearLayoutManager llm = new LinearLayoutManager(getContext());
       this.prodRv.setLayoutManager(llm);
       getLoaderManager().initLoader(1, null, this);
+    registerForContextMenu(prodRv);
 
+  }
 
+  @Override
+  public boolean onContextItemSelected(MenuItem item) {
+    Log.d(LOG_TAG, "Clicked: " + item.getTitle().toString() + " in " + adapter.getPosition());
+//    Toast.makeText(getContext(),"Clicked "+ item.getTitle().toString(),Toast.LENGTH_SHORT).show();
+    switch (item.getTitle().toString()){
+      case "Delete":
+        SyncDataService.startActionDeleteProduct(getContext(),adapter.getPosition());
+        break;
+      case "Edit":
+        Intent intent = new Intent(getContext(), AddProductActivity.class);
+        intent.putExtra(AddProductActivity.BUNDLE_PRODUCT,adapter.getProductById(adapter.getPosition()));
+        startActivity(intent);
+        break;
+    }
+
+    return super.onContextItemSelected(item);
   }
 }
 
