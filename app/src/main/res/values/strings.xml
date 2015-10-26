@@ -12,6 +12,7 @@
     <string name="transition_toolbar">transition_toolbar</string>
     <string name="action_settings">Settings</string>
     <string name="static_user_id">561ae9914cfdcc0420e8252a</string>
+    <string name="static_token">eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJfaWQiOiI1NjFhZTk5MTRjZmRjYzA0MjBlODI1MmEiLCJuYW1lIjoiSm9yZ2UgQWxlamFuZHJvIEZpZ3Vlcm9hIFDDqXJleiIsInVzZXIiOiJ5a254NCIsImltYWdlIjoiaHR0cDovL2dyYXBoLmZhY2Vib2suY29tL3YyLjUvMTI1ODAwMzA3NC9waWN0dXJlP3R5cGU9bGFyZ2UiLCJlbWFpbCI6Inlrbng0QGxpdmUuY29tLm14IiwiY3JlYXRlZCI6MTQ0Mjc3ODk0MzYzNywic2VlZCI6NDU5OTMzNTc4LCJpYXQiOjE0NDU4MzM3ODh9.5VQO99fxXCPmlGN7bYv4B8WPyJgkFbYPDbkrKpgoWvQ</string>
     <string name="title_activity_client_details">Client Details</string>
     <string name="large_text">
         "Material is the metaphor.\n\n"
@@ -102,4 +103,13 @@
         "For example, position the FAB to one side of stream of a cards so the FAB won’t interfere "
         "when a user tries to pick up one of cards.\n\n"
     </string>
+    <string name="simple_pay_day_string">%1$s, %2$s</string>
+    <string name="msg_next_payment">"Siguiente pago: "</string>
+    <string name="msg_txt_total">Total: %s</string>
+    <string name="title_payment">Payment</string>
+    <string name="title_amount">Amount</string>
+    <string name="notification_progress">Uploading</string>
+    <string name="notifaction_success">Upload complete</string>
+    <string name="notification_share_link">Compartir</string>
+    <string name="notification_fail">Upload failed</string>
 </resources>

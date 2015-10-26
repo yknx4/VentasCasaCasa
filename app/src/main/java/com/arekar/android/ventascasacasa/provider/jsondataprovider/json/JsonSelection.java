@@ -55,6 +55,8 @@ public class JsonSelection extends AbstractSelection<JsonSelection> {
         return new JsonCursor(cursor);
     }
 
+
+
     /**
      * Equivalent of calling {@code query(contentResolver, null)}.
      */

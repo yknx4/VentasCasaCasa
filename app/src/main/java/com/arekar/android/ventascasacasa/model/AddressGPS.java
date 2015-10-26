@@ -1,13 +1,15 @@
 package com.arekar.android.ventascasacasa.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class AddressGPS
-{
+public class AddressGPS implements Parcelable {
 
   @Expose
   @SerializedName("latitude")
@@ -68,6 +70,35 @@ public class AddressGPS
     this.longitude = paramDouble;
     return this;
   }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeValue(this.latitude);
+    dest.writeValue(this.longitude);
+  }
+
+  public AddressGPS() {
+  }
+
+  protected AddressGPS(Parcel in) {
+    this.latitude = (Double) in.readValue(Double.class.getClassLoader());
+    this.longitude = (Double) in.readValue(Double.class.getClassLoader());
+  }
+
+  public static final Parcelable.Creator<AddressGPS> CREATOR = new Parcelable.Creator<AddressGPS>() {
+    public AddressGPS createFromParcel(Parcel source) {
+      return new AddressGPS(source);
+    }
+
+    public AddressGPS[] newArray(int size) {
+      return new AddressGPS[size];
+    }
+  };
 }
 
 /* Location:           D:\Apps\Apk2Java\tools\classes-dex2jar.jar

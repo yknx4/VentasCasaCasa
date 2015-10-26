@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<transitionSet xmlns:android="http://schemas.android.com/apk/res/android"
+    android:duration="500">
+    <changeBounds />
+    <changeTransform />
+    <changeImageTransform />
+    <transitionSet android:transitionOrdering="sequential">
+        <transition class="com.arekar.android.ventascasacasa.transitions.RevealTransition"
+            android:transitionVisibilityMode="mode_out"/>
+        <transition class="com.arekar.android.ventascasacasa.transitions.RevealTransition"
+            android:transitionVisibilityMode="mode_in"/>
+        <targets>
+            <target android:targetId="@id/bgimage" />
+            <target android:targetName="snapshot" />
+        </targets>
+    </transitionSet>
+</transitionSet>

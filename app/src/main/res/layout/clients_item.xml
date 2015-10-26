@@ -2,7 +2,7 @@
 <LinearLayout
     android:paddingLeft="@dimen/default_padding"
     android:paddingRight="@dimen/default_padding"
-    android:paddingBottom="@dimen/default_padding"
+    android:paddingTop="@dimen/default_padding"
     android:layout_width="fill_parent"
     android:layout_height="fill_parent"
     xmlns:android="http://schemas.android.com/apk/res/android"

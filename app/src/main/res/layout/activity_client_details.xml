@@ -5,41 +5,52 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-
-    tools:context="com.arekar.android.ventascasacasa.activities.ClientDetailsAct">
+    android:id="@+id/coordination_layout"
+    tools:context="com.arekar.android.ventascasacasa.activities.ClientDetailsActivity">
 
     <android.support.design.widget.AppBarLayout
         android:id="@+id/app_bar"
         android:layout_width="match_parent"
         android:layout_height="@dimen/app_bar_height"
         android:fitsSystemWindows="true"
-        android:theme="@style/MyMaterialLightTheme.AppBarOverlay">
+        android:theme="@style/MyMaterialTheme.AppBarOverlay">
 
         <android.support.design.widget.CollapsingToolbarLayout
             android:id="@+id/toolbar_layout"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:fitsSystemWindows="true"
-            app:contentScrim="@color/colorPrimaryGray"
+            app:contentScrim="?attr/colorPrimary"
+            android:background="?attr/colorPrimary"
             app:expandedTitleMarginEnd="64dp"
             app:expandedTitleMarginStart="48dp"
             app:expandedTitleTextAppearance="@style/TransparentText"
             app:layout_scrollFlags="scroll|exitUntilCollapsed"
-            android:background="@color/colorPrimaryGray">
+            >
 
             <FrameLayout
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                app:layout_collapseMode="parallax">
+
+                app:layout_collapseMode="parallax"
+                android:id="@+id/container">
+
+                <ImageView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scaleType="centerCrop"
+                    android:adjustViewBounds="true"
+                    android:id="@+id/bgimage"
+
+                    />
 
                 <de.hdodenhof.circleimageview.CircleImageView
                     android:id="@+id/image"
-                    android:layout_width="128dp"
-                    android:layout_height="128dp"
+                    android:layout_width="0dp"
+                    android:layout_height="0dp"
                     android:src="@drawable/shica"
-                    android:layout_gravity="top|end"
+                    android:layout_gravity="center|center_horizontal|center_vertical"
                     android:layout_margin="32dp"
-                    android:visibility="gone"
                     android:transitionName="@string/transition_profile" />
 
                 <LinearLayout
@@ -59,7 +70,9 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:text="My title"
-                        android:textColor="@color/textColorPrimary"
+                        android:textColor="@android:color/white"
+                        android:textColorHighlight="@android:color/black"
+                        android:shadowColor="@android:color/black"
                         android:transitionName="@string/transition_name"
                         android:textSize="24sp" />
 
@@ -69,7 +82,9 @@
                         android:layout_height="wrap_content"
                         android:text="Subtitle"
                         android:transitionName="@string/transition_address"
-                        android:textColor="@color/textColorSecondary"
+                        android:textColor="@android:color/white"
+                        android:textColorHighlight="@android:color/darker_gray"
+                        android:shadowColor="@android:color/darker_gray"
                         android:textSize="14sp" />
                 </LinearLayout>
 
@@ -85,9 +100,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
                 app:layout_collapseMode="pin"
-                app:popupTheme="@style/MyMaterialLightTheme.PopupOverlay"
-
-                />
+                app:popupTheme="@style/MyMaterialTheme.PopupOverlay" />
 
 
         </android.support.design.widget.CollapsingToolbarLayout>
@@ -100,7 +113,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email"
+        android:src="@drawable/ic_add_black_24dp"
         app:layout_anchor="@id/app_bar"
         app:layout_anchorGravity="bottom|end" />
 

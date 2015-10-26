@@ -1,12 +1,14 @@
 package com.arekar.android.ventascasacasa.model;
 
+import android.os.Parcel;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Payment
+public class Payment extends AbstractItem
 {
 
   @Expose
@@ -20,6 +22,7 @@ public class Payment
   @Expose
   @SerializedName("sale_id")
   private String saleId;
+
 
   public boolean equals(Object paramObject)
   {
@@ -47,6 +50,11 @@ public class Payment
     return this.saleId;
   }
 
+  public String getUserId()
+  {
+    return this.userId;
+  }
+
   public int hashCode()
   {
     return new HashCodeBuilder().append(this.saleId).append(this.price).append(this.date).toHashCode();
@@ -65,6 +73,11 @@ public class Payment
   public void setSaleId(String paramString)
   {
     this.saleId = paramString;
+  }
+
+  public void setUserId(String paramString)
+  {
+    this.userId = paramString;
   }
 
   public String toString()
@@ -89,6 +102,41 @@ public class Payment
     this.saleId = paramString;
     return this;
   }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(this.date);
+    dest.writeValue(this.price);
+    dest.writeString(this.saleId);
+    dest.writeString(getUserId());
+    dest.writeString(getId());
+  }
+
+  public Payment() {
+  }
+
+  protected Payment(Parcel in) {
+    this.date = in.readString();
+    this.price = (Double) in.readValue(Double.class.getClassLoader());
+    this.saleId = in.readString();
+    setUserId(in.readString());
+    setId(in.readString());
+  }
+
+  public static final Creator<Payment> CREATOR = new Creator<Payment>() {
+    public Payment createFromParcel(Parcel source) {
+      return new Payment(source);
+    }
+
+    public Payment[] newArray(int size) {
+      return new Payment[size];
+    }
+  };
 }
 
 /* Location:           D:\Apps\Apk2Java\tools\classes-dex2jar.jar

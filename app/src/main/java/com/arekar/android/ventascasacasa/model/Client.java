@@ -1,17 +1,17 @@
 package com.arekar.android.ventascasacasa.model;
 
+import android.os.Parcel;
+import android.os.Parcelable;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Client
-{
+public class Client extends AbstractItem implements Parcelable {
 
-  @Expose
-  @SerializedName("_id")
-  private String Id;
+
 
   @Expose
   @SerializedName("address")
@@ -40,6 +40,7 @@ public class Client
   @Expose
   @SerializedName("phone")
   private String phone;
+
 
   public boolean equals(Object paramObject)
   {
@@ -71,10 +72,7 @@ public class Client
     return this.enabled;
   }
 
-  public String getId()
-  {
-    return this.Id;
-  }
+
 
   public String getImage()
   {
@@ -116,10 +114,7 @@ public class Client
     this.enabled = paramBoolean;
   }
 
-  public void setId(String paramString)
-  {
-    this.Id = paramString;
-  }
+
 
   public void setImage(String paramString)
   {
@@ -188,6 +183,59 @@ public class Client
     this.phone = paramString;
     return this;
   }
+
+  public Client() {
+  }
+
+
+
+  public String getUserId() {
+    return userId;
+  }
+
+  public void setUserId(String userId) {
+    this.userId = userId;
+  }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(this.address);
+    dest.writeParcelable(this.addressGPS, 0);
+    dest.writeString(this.email);
+    dest.writeValue(this.enabled);
+    dest.writeString(this.image);
+    dest.writeString(this.name);
+    dest.writeString(this.phone);
+    dest.writeString(getUserId());
+    dest.writeString(this.getId());
+  }
+
+  protected Client(Parcel in) {
+    this.address = in.readString();
+    this.addressGPS = in.readParcelable(AddressGPS.class.getClassLoader());
+    this.email = in.readString();
+    this.enabled = (Boolean) in.readValue(Boolean.class.getClassLoader());
+    this.image = in.readString();
+    this.name = in.readString();
+    this.phone = in.readString();
+    setUserId(in.readString());
+    this.setId(in.readString());
+  }
+
+  public static final Parcelable.Creator<Client> CREATOR = new Parcelable.Creator<Client>() {
+    public Client createFromParcel(Parcel source) {
+      return new Client(source);
+    }
+
+    public Client[] newArray(int size) {
+      return new Client[size];
+    }
+  };
 }
 
 /* Location:           D:\Apps\Apk2Java\tools\classes-dex2jar.jar

@@ -1,12 +1,22 @@
 package com.arekar.android.ventascasacasa.rest;
 
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+
+import org.json.JSONObject;
+
 import java.io.IOException;
 
-public abstract interface JsonSpiceRequest
+public interface JsonSpiceRequest
 {
-  public abstract JsonArray loadDataFromNetwork()
+  JsonArray loadDataFromNetwork()
     throws IOException;
+  Boolean insertData();
+  Boolean updateData(JSONObject data);
+  JsonElement updateData(String id, String data) throws IOException;
+  Boolean updateData(String field, String value, String data) throws IOException;
+  Boolean updateData(String[] fields, String values[], String data);
+  Boolean deleteData(String id);
 }
 
 /* Location:           D:\Apps\Apk2Java\tools\classes-dex2jar.jar

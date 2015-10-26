@@ -8,8 +8,8 @@
     <color name="colorPrimary">#ff9c27b0</color>
     <color name="colorPrimaryDark">#ff7b1fa2</color>
     <color name="colorPrimaryLight">#ffe1bee7</color>
-    <color name="divider">#ffb6b6b6</color>
-    <color name="icons">#ffffffff</color>
+    <!--<color name="divider">#ffb6b6b6</color>-->
+    <!--<color name="icons">#ffffffff</color>-->
     <color name="navigationBarColor">#ff000000</color>
     <color name="textColorPrimary">#ff212121</color>
     <color name="textColorSecondary">#ff727272</color>
@@ -17,4 +17,13 @@
 
     <color name="colorPrimaryGray">#f1f1f1</color>
     <color name="colorPrimaryGrayDark">#d2d2d2</color>
+
+    <color name="primary">#E91E63</color>
+    <color name="primary_dark">#C2185B</color>
+    <color name="primary_light">#F8BBD0</color>
+    <color name="accent">#FFEB3B</color>
+    <color name="primary_text">#212121</color>
+    <color name="secondary_text">#727272</color>
+    <color name="icons">#FFFFFF</color>
+    <color name="divider">#B6B6B6</color>
 </resources>

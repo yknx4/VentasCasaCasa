@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.arekar.android.ventascasacasa.R;
+import com.arekar.android.ventascasacasa.activities.BaseActivity;
 import com.arekar.android.ventascasacasa.model.Client;
 import com.arekar.android.ventascasacasa.model.Product;
 import com.bumptech.glide.DrawableRequestBuilder;
@@ -22,17 +23,24 @@ import com.bumptech.glide.RequestManager;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
+
+import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.List;
 
 public class ProductRvAdapter extends RecyclerView.Adapter<ProductRvAdapter.ProductViewHolder>
 {
   List<Product> products;
+  WeakReference<BaseActivity> act;
 
   public ProductRvAdapter(JsonArray paramJsonArray)
   {
     Type list = new TypeToken<List<Product>>(){}.getType();
     this.products = ((List)new Gson().fromJson(paramJsonArray, list));
+  }
+  public ProductRvAdapter(JsonArray array, BaseActivity act){
+    this(array);
+    this.act = new WeakReference<>(act);
   }
 
   public int getItemCount()

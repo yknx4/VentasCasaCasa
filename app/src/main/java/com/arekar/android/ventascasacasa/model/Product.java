@@ -1,17 +1,17 @@
 package com.arekar.android.ventascasacasa.model;
 
+import android.os.Parcel;
+
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
-public class Product
+public class Product extends AbstractItem
 {
 
-  @Expose
-  @SerializedName("_id")
-  private String Id;
+
 
   @Expose
   @SerializedName("brand")
@@ -75,10 +75,7 @@ public class Product
     return this.description;
   }
 
-  public String getId()
-  {
-    return this.Id;
-  }
+
 
   public String getImage()
   {
@@ -125,10 +122,7 @@ public class Product
     this.description = paramString;
   }
 
-  public void setId(String paramString)
-  {
-    this.Id = paramString;
-  }
+
 
   public void setImage(String paramString)
   {
@@ -208,6 +202,51 @@ public class Product
     this.price = paramDouble;
     return this;
   }
+
+  @Override
+  public int describeContents() {
+    return 0;
+  }
+
+  @Override
+  public void writeToParcel(Parcel dest, int flags) {
+    dest.writeString(this.brand);
+    dest.writeString(this.color);
+    dest.writeValue(this.cost);
+    dest.writeString(this.description);
+    dest.writeString(this.image);
+    dest.writeString(this.model);
+    dest.writeString(this.name);
+    dest.writeValue(this.price);
+    dest.writeString(getId());
+    dest.writeString(getUserId());
+  }
+
+  public Product() {
+  }
+
+  protected Product(Parcel in) {
+    this.brand = in.readString();
+    this.color = in.readString();
+    this.cost = (Double) in.readValue(Double.class.getClassLoader());
+    this.description = in.readString();
+    this.image = in.readString();
+    this.model = in.readString();
+    this.name = in.readString();
+    this.price = (Double) in.readValue(Double.class.getClassLoader());
+    setId(in.readString());
+    setUserId(in.readString());
+  }
+
+  public static final Creator<Product> CREATOR = new Creator<Product>() {
+    public Product createFromParcel(Parcel source) {
+      return new Product(source);
+    }
+
+    public Product[] newArray(int size) {
+      return new Product[size];
+    }
+  };
 }
 
 /* Location:           D:\Apps\Apk2Java\tools\classes-dex2jar.jar

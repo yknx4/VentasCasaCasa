@@ -27,6 +27,7 @@ dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
     testCompile 'junit:junit:4.12'
     compile 'com.android.support:appcompat-v7:23.1.0'
+    compile 'com.squareup.retrofit:retrofit:1.9.+'
     compile 'com.android.support:design:23.1.0'
     compile 'com.android.support:cardview-v7:23.0.+'
     compile 'com.android.support:recyclerview-v7:23.0.+'
@@ -35,10 +36,19 @@ dependencies {
     compile 'com.koushikdutta.ion:ion:2.+'
     compile 'com.google.code.gson:gson:2.4'
     compile 'de.hdodenhof:circleimageview:2.0.0'
+    compile 'net.danlew:android.joda:2.8.2'
     compile 'com.octo.android.robospice:robospice:1.4.+'
     compile 'com.octo.android.robospice:robospice-google-http-client:1.4.+'
     compile('com.google.http-client:google-http-client-gson:1.20.+') {
         exclude module: 'xpp3'
         exclude group: 'stax'
     }
+    compile('com.afollestad.material-dialogs:core:0.8.4.2@aar') {
+        transitive = true
+    }
+    compile('com.afollestad.material-dialogs:commons:0.8.4.2@aar') {
+        transitive = true
+    }
+    compile 'com.github.vijayrawatsan:android-json-form-wizard:1.0'
+    compile 'com.mobsandgeeks:android-saripaar:2.0.+'
 }
