@@ -27,18 +27,16 @@ import roboguice.util.temp.Ln;
 /**
  * Created by yknx4 on 24/10/2015.
  */
-public class PaymentsSpiceRequest extends GoogleHttpClientSpiceRequest<JsonArray>
-        implements JsonSpiceRequest {
-    private String userId;
+public class PaymentsSpiceRequest extends  JsonSpiceRequest<JsonArray> {
     private String clientid;
 
-    public PaymentsSpiceRequest(@NonNull String userid, @NonNull String clientid) {
-        this(userid);
+    public PaymentsSpiceRequest(@NonNull String token, @NonNull String userid, @NonNull String clientid) {
+        super(JsonArray.class,token,userid);
         this.clientid = clientid;
     }
-    public PaymentsSpiceRequest(@NonNull String userid){
-        this();
-        userId = userid;
+    public PaymentsSpiceRequest(@NonNull String token,@NonNull String userid){
+        super(JsonArray.class, token, userid);
+
     }
     private PaymentsSpiceRequest(){
         super(JsonArray.class);
@@ -46,102 +44,34 @@ public class PaymentsSpiceRequest extends GoogleHttpClientSpiceRequest<JsonArray
 
     }
 
-
-
-    @Override
-    public Boolean updateData(JSONObject data) {
-        return null;
-    }
-
-    @Override
-    public JsonElement updateData(String id, String data) {
-        //return updateData("_id",id,data);
-        return null;
-    }
-
-    @Override
-    public Boolean updateData(String field, String value, String data) {
-       //return  updateData(new String[]{field},new String[]{value},data);
-        return null;
-    }
-
-    @Override
-    public Boolean updateData(String[] fields, String[] values, String data) {
-        return null;
-    }
-
-    @Override
-    public Boolean deleteData(String id) {
-        return null;
-    }
     final String baseUrl = Constants.Connections.API_URL+Constants.Connections.PATH_PAYMENTS;
     @Override
     public JsonArray loadDataFromNetwork() throws IOException
     {
         Ln.d("Call web service " + this.baseUrl);
-        Object localObject = new GenericUrl(this.baseUrl);
-        ((GenericUrl)localObject).put("user_id", userId);
-        Ln.d("User: " + userId);
-        Ln.d("Generic URL: " + ((GenericUrl)localObject).toString());
-        localObject = getHttpRequestFactory().buildGetRequest((GenericUrl)localObject);
-        ((HttpRequest)localObject).setParser(new GsonFactory().createJsonObjectParser());
-        localObject = ((HttpRequest)localObject).execute();
-        return (JsonArray)(JsonArray)new Gson().fromJson(new InputStreamReader(((HttpResponse)localObject).getContent()), JsonArray.class);
+        GenericUrl localObject = new GenericUrl(this.baseUrl);
+        ((GenericUrl)localObject).put("user_id", getUserId());
+        Ln.d("User: " + getUserId());
+        Ln.d("Generic URL: " + localObject.toString());
+        return loadDataFromNetwork(localObject).getAsJsonArray();
     }
 
     @Override
-    public Boolean insertData() {
+    public Boolean updateData(String element, String elementId) throws IOException {
         return null;
     }
 
-    public JsonElement insertData(String url, String element) throws IOException
+    @Override
+    public JsonElement insertData(String element) throws IOException
     {
-        Ln.d("Call web service " + url);
-        GenericUrl gUrl = new GenericUrl(url);
-        Ln.d("User: " + userId);
-        Ln.d("Generic URL: " + gUrl.toString());
-        Ln.d("Inserting: "+element );
-        HttpContent json = ByteArrayContent.fromString("application/json", element);
-        HttpRequest httpRequest = getHttpRequestFactory().buildPostRequest(gUrl, json);
-        httpRequest.setParser(new GsonFactory().createJsonObjectParser());
-        //httpRequest.setHeaders(httpRequest.getHeaders().setContentType("application/json"));
-        HttpResponse httpResponse = httpRequest.execute();
-        JsonElement response = new Gson().fromJson(new InputStreamReader(httpResponse.getContent()), JsonElement.class);
-        Ln.d("JSON Response: "+response.toString());
-        return response;
+        GenericUrl gUrl = new GenericUrl(baseUrl);
+        gUrl.put("token",getToken());
+        return insertData(gUrl,element);
     }
-    public JsonElement insertData(String url, Payment pay) throws IOException
-    {
-        Ln.d("Call web service " + url);
-        GenericUrl gUrl = new GenericUrl(url);
-        Ln.d("User: " + userId);
-        Ln.d("Generic URL: " + gUrl.toString());
-        HttpContent json = new JsonHttpContent(new GsonFactory(),pay);
-        HttpRequest httpRequest = getHttpRequestFactory().buildPostRequest(gUrl, json);
-        httpRequest.setParser(new GsonFactory().createJsonObjectParser());
-        httpRequest.setHeaders(httpRequest.getHeaders().setContentType("application/json"));
-        HttpResponse httpResponse = httpRequest.execute();
-        JsonElement response = new Gson().fromJson(new InputStreamReader(httpResponse.getContent()), JsonElement.class);
-        Ln.d("JSON Response: "+response.toString());
-        return response;
-//        JsonHttpContent jsonHttpContent = new JsonHttpContent(new GsonFactory(), pay);
-//
-//        //ByteArrayContent.fromString("application/json", jsonObject.toString())
-//        HttpRequest request = getHttpRequestFactory().buildPostRequest(
-//                new GenericUrl(baseUrl),
-//                jsonHttpContent);
-//
-//
-//        request.getHeaders().setContentType("application/json");
-//
-//        request.setParser(new GsonFactory().createJsonObjectParser());
-//
-//        request.setContent(jsonHttpContent);
-//
-//        HttpResponse httpResponse = request.execute();
-//
-//        JsonElement result = new Gson().fromJson(new InputStreamReader(httpResponse.getContent()), JsonElement.class);
-//
-//        return result;
+
+    @Override
+    public boolean deleteFromNetwork(String elementid) throws IOException {
+        return false;
     }
+
 }

@@ -7,7 +7,6 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.annotation.Nullable;
 import android.support.design.widget.FloatingActionButton;
-import android.support.v4.app.Fragment;
 import android.support.v4.app.LoaderManager.LoaderCallbacks;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -18,7 +17,6 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Toast;
 
 import com.arekar.android.ventascasacasa.Constants;
 import com.arekar.android.ventascasacasa.R;
@@ -83,7 +81,7 @@ public class ClientsFragment extends BaseFragment
 //    Toast.makeText(getContext(),"Clicked "+ item.getTitle().toString(),Toast.LENGTH_SHORT).show();
     switch (item.getTitle().toString()){
       case "Delete":
-        SyncDataService.startActionDeleteClient(getContext(),adapter.getPosition(),getToken(),getUserId());
+        SyncDataService.startActionDeleteClient(getContext(),adapter.getPosition());
         break;
       case "Edit":
         Intent intent = new Intent(getContext(), AddClientActivity.class);
@@ -99,6 +97,7 @@ public class ClientsFragment extends BaseFragment
   {
     if (paramCursor.moveToFirst())
     {
+      saveLayoutManagerPosition();
       JsonCursor c  = new JsonCursor(paramCursor);
       this.adapter = new ClientRvAdapter((JsonArray)new Gson().fromJson(c.getData(), JsonArray.class), getActivity());
       this.recyclerView.setAdapter(this.adapter);
@@ -106,7 +105,7 @@ public class ClientsFragment extends BaseFragment
       return;
     }
     Log.d(LOG_TAG, "No data received");
-    SyncDataService.startActionFetchClients(getContext(), getUserId());
+    SyncDataService.startActionFetchClients(getContext());
   }
 
   public void onLoaderReset(Loader paramLoader)
@@ -131,13 +130,13 @@ public class ClientsFragment extends BaseFragment
 
   public void setRecyclerViewLayoutManager(RecyclerView paramRecyclerView)
   {
-
-    if (paramRecyclerView.getLayoutManager() != null ){
-      if(restoredPos<0)
-      restoredPos = ((LinearLayoutManager)paramRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
-    }
-    paramRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
-    paramRecyclerView.scrollToPosition(restoredPos);
+//    if (paramRecyclerView.getLayoutManager() != null ){
+//      if(restoredPos<0)
+//      restoredPos = ((LinearLayoutManager)paramRecyclerView.getLayoutManager()).findFirstCompletelyVisibleItemPosition();
+//    }
+//    paramRecyclerView.setLayoutManager(new LinearLayoutManager(getActivity()));
+//    paramRecyclerView.scrollToPosition(restoredPos);
+    paramRecyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
   }
 
   private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
@@ -165,6 +164,7 @@ public class ClientsFragment extends BaseFragment
     super.onSaveInstanceState(outState);
     outState.putParcelable(BUNDLE_RECYCLER_LAYOUT, recyclerView.getLayoutManager().onSaveInstanceState());
   }
+
 
 
 

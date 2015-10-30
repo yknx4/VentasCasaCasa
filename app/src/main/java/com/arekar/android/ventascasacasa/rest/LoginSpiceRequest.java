@@ -1,19 +1,16 @@
 package com.arekar.android.ventascasacasa.rest;
 
 import com.google.api.client.http.GenericUrl;
-import com.google.api.client.http.HttpRequest;
-import com.google.api.client.http.HttpRequestFactory;
-import com.google.api.client.http.HttpResponse;
-import com.google.api.client.json.gson.GsonFactory;
-import com.google.api.client.testing.http.MockHttpContent;
-import com.google.gson.Gson;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
-import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
+
+import org.apache.commons.lang3.NotImplementedException;
+
 import java.io.IOException;
-import java.io.InputStreamReader;
+
 import roboguice.util.temp.Ln;
 
-public class LoginSpiceRequest extends GoogleHttpClientSpiceRequest<JsonObject>
+public class LoginSpiceRequest extends JsonSpiceRequest<JsonObject>
 {
   private String baseUrl = "http://sales-yknx4.rhcloud.com/login";
   private String password;
@@ -30,17 +27,31 @@ public class LoginSpiceRequest extends GoogleHttpClientSpiceRequest<JsonObject>
     throws IOException
   {
     Ln.d("Call web service " + this.baseUrl, new Object[0]);
-    Object localObject = new GenericUrl(this.baseUrl);
-    ((GenericUrl)localObject).put("user", this.user);
-    ((GenericUrl)localObject).put("password", this.password);
+    GenericUrl localObject = new GenericUrl(this.baseUrl);
+    localObject.put("user", this.user);
+    localObject.put("password", this.password);
     Ln.d("User: " + this.user, new Object[0]);
-    Ln.d("Generic URL: " + ((GenericUrl)localObject).toString(), new Object[0]);
-    MockHttpContent localMockHttpContent = new MockHttpContent();
-    localObject = getHttpRequestFactory().buildPostRequest((GenericUrl)localObject, localMockHttpContent);
-    ((HttpRequest)localObject).setParser(new GsonFactory().createJsonObjectParser());
-    localObject = ((HttpRequest)localObject).execute();
-    return (JsonObject)(JsonObject)new Gson().fromJson(new InputStreamReader(((HttpResponse)localObject).getContent()), JsonObject.class);
+    Ln.d("Generic URL: " + localObject.toString(), new Object[0]);
+
+    return loadDataFromNetwork(localObject,RequestMethod.post,null).getAsJsonObject();
   }
+
+  @Override
+  public Boolean updateData(String element, String elementId) throws IOException {
+    return null;
+  }
+
+  @Override
+  public JsonElement insertData(String data) throws IOException {
+    throw new NotImplementedException("You shall not pass!");
+  }
+
+  @Override
+  public boolean deleteFromNetwork(String elementid) throws IOException {
+    return false;
+  }
+
+
 }
 
 /* Location:           D:\Apps\Apk2Java\tools\classes-dex2jar.jar

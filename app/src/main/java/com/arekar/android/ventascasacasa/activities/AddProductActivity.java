@@ -23,7 +23,6 @@ import android.support.design.widget.TextInputLayout;
 import android.widget.EditText;
 import android.widget.Button;
 import android.widget.Spinner;
-import android.widget.Toast;
 
 import com.arekar.android.ventascasacasa.R;
 import com.arekar.android.ventascasacasa.imgurmodel.ImageResponse;
@@ -350,7 +349,7 @@ public class AddProductActivity extends BaseActivity implements View.OnClickList
 
                     snackText = getInputName().getText().toString() + " added.";
                     if(update) snackText = getInputName().getText().toString() + " updated.";
-                    SyncDataService.startActionFetchProducts(this, getUserId());
+                    SyncDataService.startActionFetchProducts(this);
                 }
                 Snackbar snack = Snackbar.make(coordinationLayout, snackText, Snackbar.LENGTH_LONG);
                 snack.show();

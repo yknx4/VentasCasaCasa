@@ -12,9 +12,8 @@ import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
-import com.octo.android.robospice.GoogleHttpClientSpiceService;
-import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 
+import org.apache.commons.lang3.NotImplementedException;
 import org.json.JSONObject;
 
 import java.io.IOException;
@@ -25,75 +24,46 @@ import roboguice.util.temp.Ln;
 /**
  * Created by yknx4 on 23/10/2015.
  */
-public class SalesSpiceRequest extends GoogleHttpClientSpiceRequest<JsonArray> implements JsonSpiceRequest {
-    String userid;
+public class SalesSpiceRequest extends JsonSpiceRequest<JsonArray> {
+
     String baseUrl = Constants.Connections.API_URL+Constants.Connections.PATH_SALES;
 
     @Override
     public JsonArray loadDataFromNetwork() throws IOException
     {
-        Ln.d("Call web service " + this.baseUrl, new Object[0]);
-        Object localObject = new GenericUrl(this.baseUrl);
-        ((GenericUrl)localObject).put("user_id", this.userid);
-        Ln.d("User: " + this.userid, new Object[0]);
-        Ln.d("Generic URL: " + ((GenericUrl)localObject).toString(), new Object[0]);
-        localObject = getHttpRequestFactory().buildGetRequest((GenericUrl)localObject);
-        ((HttpRequest)localObject).setParser(new GsonFactory().createJsonObjectParser());
-        localObject = ((HttpRequest)localObject).execute();
-        return (JsonArray)(JsonArray)new Gson().fromJson(new InputStreamReader(((HttpResponse)localObject).getContent()), JsonArray.class);
+        GenericUrl localUrl = new GenericUrl(this.baseUrl);
+        localUrl.put("user_id", getUserId());
+        localUrl.put("token", getToken());
+        Ln.d("User: " + getUserId());
+        return loadDataFromNetwork(localUrl).getAsJsonArray();
     }
 
     @Override
-    public Boolean insertData() {
-        return null;
+    public Boolean updateData(String element, String elementId) throws IOException {
+        throw new NotImplementedException("You shall not pass!");
     }
 
-    @Override
-    public Boolean updateData(JSONObject data) {
-        return null;
-    }
 
-    @Override
-    public JsonElement updateData(String id, String data) {
-        return null;
-    }
-
-    @Override
-    public Boolean updateData(String field, String value, String data) {
-        return null;
-    }
-
-    @Override
-    public Boolean updateData(String[] fields, String[] values, String data) {
-        return null;
-    }
-
-    @Override
-    public Boolean deleteData(String id) {
-        return null;
-    }
-
-    public SalesSpiceRequest(@NonNull String paramString)
+    public SalesSpiceRequest(@NonNull String token, @NonNull String userid)
     {
-        super(JsonArray.class);
-        userid = paramString;
-        setHttpRequestFactory(GoogleHttpClientSpiceService.createRequestFactory());
+        super(JsonArray.class,token,userid);
     }
 
+    @Override
     public JsonElement insertData(String element) throws IOException{
         String url = baseUrl;
-        Ln.d("Call web service " + url);
         GenericUrl gUrl = new GenericUrl(url);
-        Ln.d("User: " + userid);
+        Ln.d("User: " + getUserId());
         Ln.d("Generic URL: " + gUrl.toString());
-        Ln.d("Inserting: "+element );
-        HttpContent json = ByteArrayContent.fromString("application/json", element);
-        HttpRequest httpRequest = getHttpRequestFactory().buildPostRequest(gUrl, json);
-        httpRequest.setParser(new GsonFactory().createJsonObjectParser());
-        //httpRequest.setHeaders(httpRequest.getHeaders().setContentType("application/json"));
-        HttpResponse httpResponse = httpRequest.execute();
-        JsonElement response = new Gson().fromJson(new InputStreamReader(httpResponse.getContent()), JsonElement.class);
+        gUrl.put("token", getToken());
+        Ln.d("Inserting: " + element);
+        JsonElement response = insertData(gUrl,element);
         Ln.d("JSON Response: "+response.toString());
         return response;
+    }
+
+    @Override
+    public boolean deleteFromNetwork(String elementid) throws IOException {
+        return false;
     }
 }

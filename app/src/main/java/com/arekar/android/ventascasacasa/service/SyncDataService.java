@@ -17,8 +17,6 @@ import android.widget.Toast;
 
 import com.arekar.android.ventascasacasa.Constants;
 import com.arekar.android.ventascasacasa.R;
-import com.arekar.android.ventascasacasa.activities.AddClientActivity;
-import com.arekar.android.ventascasacasa.activities.AddSaleActivity;
 import com.arekar.android.ventascasacasa.model.Client;
 import com.arekar.android.ventascasacasa.model.Payment;
 import com.arekar.android.ventascasacasa.model.Product;
@@ -48,7 +46,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
@@ -100,30 +97,30 @@ public class SyncDataService extends IntentService {
         super("SyncDataService");
     }
 
-    public static void startActionFetchAll(Context paramContext, String paramString) {
+    public static void startActionFetchAll(Context paramContext) {
         Intent localIntent = new Intent(paramContext, SyncDataService.class);
         localIntent.setAction("com.arekar.android.ventascasacasa.service.action.FETCH_ALL");
-        localIntent.putExtra("com.arekar.android.ventascasacasa.service.extra.PARAM_USER_ID", paramString);
+
         paramContext.startService(localIntent);
     }
 
-    public static void startActionFetchClients(Context paramContext, String paramString) {
+    public static void startActionFetchClients(Context paramContext) {
         Log.d(LOG_TAG, "Fetching Clients");
         Intent localIntent = new Intent(paramContext, SyncDataService.class);
         localIntent.setAction("com.arekar.android.ventascasacasa.service.action.FETCH_CLIENTS");
-        localIntent.putExtra("com.arekar.android.ventascasacasa.service.extra.PARAM_USER_ID", paramString);
+
         paramContext.startService(localIntent);
     }
 
-    public static void startActionFetchProducts(Context paramContext, String paramString) {
+    public static void startActionFetchProducts(Context paramContext) {
         Log.d(LOG_TAG, "Fetching Products");
         Intent localIntent = new Intent(paramContext, SyncDataService.class);
         localIntent.setAction("com.arekar.android.ventascasacasa.service.action.FETCH_PRODUCTS");
-        localIntent.putExtra("com.arekar.android.ventascasacasa.service.extra.PARAM_USER_ID", paramString);
+
         paramContext.startService(localIntent);
     }
 
-    public static void startActionFetchPayments(Context paramContext, String paramString) {
+    public static void startActionFetchPayments(Context paramContext) {
         Log.d(LOG_TAG, "Fetching Payments");
         Intent localIntent = new Intent(paramContext, SyncDataService.class);
         localIntent.setAction(ACTION_FETCH_PAYMENTS);
@@ -131,7 +128,7 @@ public class SyncDataService extends IntentService {
         paramContext.startService(localIntent);
     }
 
-    public static void startActionFetchSales(Context paramContext, String paramString) {
+    public static void startActionFetchSales(Context paramContext) {
         Log.d(LOG_TAG, "Fetching Sales");
         Intent localIntent = new Intent(paramContext, SyncDataService.class);
         localIntent.setAction(ACTION_FETCH_SALES);
@@ -139,7 +136,7 @@ public class SyncDataService extends IntentService {
         paramContext.startService(localIntent);
     }
 
-    public static void startActionDoPayment(Context paramContext, String user_id, String sale_id, Double amount, Messenger msg) {
+    public static void startActionDoPayment(Context paramContext, String sale_id, Double amount, Messenger msg) {
         Log.d(LOG_TAG, "Doing Payment: " + amount);
         Intent localIntent = new Intent(paramContext, SyncDataService.class);
         localIntent.setAction(ACTION_DO_PAYMENT);
@@ -150,7 +147,7 @@ public class SyncDataService extends IntentService {
         paramContext.startService(localIntent);
     }
 
-    public static void startActionDeleteClient(Context context, String client_id, String token, String userid) {
+    public static void startActionDeleteClient(Context context, String client_id) {
         Log.d(LOG_TAG, "Deleting client " + client_id);
         Intent localIntent = new Intent(context, SyncDataService.class);
         localIntent.setAction(ACTION_DELETE_CLIENT);
@@ -186,7 +183,7 @@ public class SyncDataService extends IntentService {
         context.startService(localIntent);
     }
 
-    public static void startActionUpdateClient(Context context, Client client, Messenger msg, String token) {
+    public static void startActionUpdateClient(Context context, Client client, Messenger msg) {
         Log.d(LOG_TAG, "Adding: " + client.getName());
         Intent localIntent = new Intent(context, SyncDataService.class);
         localIntent.setAction(ACTION_UPDATE_CLIENT);
@@ -220,10 +217,10 @@ public class SyncDataService extends IntentService {
         Log.d(LOG_TAG, "HEAD");
         Response paramString1 = null;
         try {
-            paramString1 = (Response) ((B) Ion.with(getBaseContext()).load("HEAD", url)).asString().withResponse().get();
+            paramString1 = (Response) Ion.with(getBaseContext()).load("HEAD", url).asString().withResponse().get();
             Log.d(LOG_TAG, "RESULT");
             String localObject = paramString1.getHeaders().getHeaders().get("Last-Modified");
-            Log.d(LOG_TAG, "Last-mod: " + (String) localObject);
+            Log.d(LOG_TAG, "Last-mod: " + localObject);
             Date newD = null;
             try {
                 newD = localSimpleDateFormat.parse(localObject);
@@ -278,16 +275,19 @@ public class SyncDataService extends IntentService {
 
     private void handleActionDeleteClient(Intent inte) {
         String clientid = inte.getStringExtra(EXTRA_PARAM_CLIENT_ID);
-//    String token = inte.getStringExtra(EXTRA_PARAM_TOKEN);
-//    String userid = inte.getStringExtra(EXTRA_PARAM_USER_ID);
         String token = getToken();
         String userid = getUserId();
+        ClientsSpiceRequest req = new ClientsSpiceRequest(token,userid);
+        if(handleActionDelete("Client", clientid,req)){
+            handleActionFetchClients();
+        }
+    }
 
-        ClientsSpiceRequest req = new ClientsSpiceRequest("");
+    private boolean handleActionDelete(String title, String id, JsonSpiceRequest req){
         try {
-            if (req.deleteFromNetwork(clientid, token)) {
-                handleActionFetchClients(userid, true);
-                Toast.makeText(this, "Client deleted successful", Toast.LENGTH_SHORT).show();
+            if (req.deleteFromNetwork(id)) {
+                Toast.makeText(this, title+" deleted successful", Toast.LENGTH_SHORT).show();
+                return true;
             } else {
                 Toast.makeText(this, "Deleting failed.", Toast.LENGTH_SHORT).show();
             }
@@ -295,7 +295,7 @@ public class SyncDataService extends IntentService {
             e.printStackTrace();
             Toast.makeText(this, "Deleting failed with IOException", Toast.LENGTH_SHORT).show();
         }
-
+        return false;
     }
 
     private void handleActionDeleteProduct(Intent inte) {
@@ -303,51 +303,51 @@ public class SyncDataService extends IntentService {
         String token = getToken();
         String userid = getUserId();
 
-        ProductsSpiceRequest req = new ProductsSpiceRequest(userid);
-        try {
-            if (req.deleteFromNetwork(clientid, token)) {
-                handleActionFetchClients(userid, true);
-                Toast.makeText(this, "Product deleted successful", Toast.LENGTH_SHORT).show();
-            } else {
-                Toast.makeText(this, "Deleting failed.", Toast.LENGTH_SHORT).show();
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-            Toast.makeText(this, "Deleting failed with IOException", Toast.LENGTH_SHORT).show();
+        ProductsSpiceRequest req = new ProductsSpiceRequest(token,userid);
+        if(handleActionDelete("Product", clientid,req)){
+            handleActionFetchProducts();
         }
 
     }
 
     private void handleActionFetchClients(String userid, boolean b) {
         if (b) {
-            syncData(userid, new Date(), JsonColumns.ROW_CLIENTS_ID, new ClientsSpiceRequest(userid));
+            syncData(userid, new Date(), JsonColumns.ROW_CLIENTS_ID, new ClientsSpiceRequest(getToken(),userid));
         } else {
-            handleActionFetchClients(userid);
+            handleActionFetchClients();
         }
     }
 
-    private void handleActionFetchClients(String userId) {
+    private void handleActionFetchClients() {
+        String userId = getUserId();
+        String token = getToken();
         Updated localUpdated = checkIfUpdatedJson(getUrl(userId, JsonColumns.ROW_CLIENTS_ID), JsonColumns.ROW_CLIENTS_ID);
         if (localUpdated.isUpdated())
-            syncData(userId, localUpdated.getWhen(), JsonColumns.ROW_CLIENTS_ID, new ClientsSpiceRequest(userId));
+            syncData(userId, localUpdated.getWhen(), JsonColumns.ROW_CLIENTS_ID, new ClientsSpiceRequest(token,userId));
     }
 
-    private void handleActionFetchSales(String userId) {
+    private void handleActionFetchSales() {
+        String userId = getUserId();
+        String token = getToken();
         Updated localUpdated = checkIfUpdatedJson(getUrl(userId, JsonColumns.ROW_SALES_ID), JsonColumns.ROW_SALES_ID);
         if (localUpdated.isUpdated())
-            syncData(userId, localUpdated.getWhen(), JsonColumns.ROW_SALES_ID, new SalesSpiceRequest(userId));
+            syncData(userId, localUpdated.getWhen(), JsonColumns.ROW_SALES_ID, new SalesSpiceRequest(token,userId));
     }
 
-    private void handleActionFetchProducts(String userid) {
+    private void handleActionFetchProducts( ){
+        String userid = getUserId();
+        String token = getToken();
         Updated localUpdated = checkIfUpdatedJson(getUrl(userid, JsonColumns.ROW_PRODUCTS_ID), JsonColumns.ROW_PRODUCTS_ID);
         if (localUpdated.isUpdated())
-            syncData(userid, localUpdated.getWhen(), JsonColumns.ROW_PRODUCTS_ID, new ProductsSpiceRequest(userid));
+            syncData(userid, localUpdated.getWhen(), JsonColumns.ROW_PRODUCTS_ID, new ProductsSpiceRequest(token,userid));
     }
 
-    private void handleActionFetchPayments(String userid) {
+    private void handleActionFetchPayments() {
+        String userid = getUserId();
+        String token = getToken();
         Updated localUpdated = checkIfUpdatedJson(getUrl(userid, JsonColumns.ROW_PAYMENTS_ID), JsonColumns.ROW_PAYMENTS_ID);
         if (localUpdated.isUpdated())
-            syncData(userid, localUpdated.getWhen(), JsonColumns.ROW_PAYMENTS_ID, new PaymentsSpiceRequest(userid));
+            syncData(userid, localUpdated.getWhen(), JsonColumns.ROW_PAYMENTS_ID, new PaymentsSpiceRequest(token,userid));
     }
 
     private void syncData(String userid, Date date, long row_id, JsonSpiceRequest paramJsonSpiceRequest) {
@@ -355,7 +355,7 @@ public class SyncDataService extends IntentService {
         Log.d(LOG_TAG, "Start");
         ContentResolver cr = getContentResolver();
         try {
-            JsonArray ja = paramJsonSpiceRequest.loadDataFromNetwork();
+            JsonArray ja = paramJsonSpiceRequest.loadDataFromNetwork().getAsJsonArray();
             String js = new Gson().toJson(ja);
             Log.d(LOG_TAG, "Json: " + paramJsonSpiceRequest);
             JsonContentValues localJsonContentValues = new JsonContentValues();
@@ -384,8 +384,8 @@ public class SyncDataService extends IntentService {
 
         String act = paramIntent.getAction();
 //    String userId = paramIntent.getStringExtra(EXTRA_PARAM_USER_ID);
-        String userId = getUserId();
-        Log.d(LOG_TAG, "Intent with userid: " + userId);
+//        String userId = getUserId();
+//        Log.d(LOG_TAG, "Intent with userid: " + userId);
 
         switch (act) {
             case ACTION_DO_PAYMENT:
@@ -407,16 +407,16 @@ public class SyncDataService extends IntentService {
                 handleActionUpdateProduct(paramIntent);
                 break;
             case ACTION_FETCH_PRODUCTS:
-                handleActionFetchProducts(userId);
+                handleActionFetchProducts();
                 break;
             case ACTION_FETCH_CLIENTS:
-                handleActionFetchClients(userId);
+                handleActionFetchClients();
                 break;
             case ACTION_FETCH_SALES:
-                handleActionFetchSales(userId);
+                handleActionFetchSales();
                 break;
             case ACTION_FETCH_PAYMENTS:
-                handleActionFetchPayments(userId);
+                handleActionFetchPayments();
                 break;
             case ACTION_DELETE_CLIENT:
                 handleActionDeleteClient(paramIntent);
@@ -425,143 +425,52 @@ public class SyncDataService extends IntentService {
                 handleActionDeleteProduct(paramIntent);
                 break;
             case ACTION_FETCH_ALL:
-                handleActionFetchProducts(userId);
-                handleActionFetchClients(userId);
-                handleActionFetchSales(userId);
-                handleActionFetchPayments(userId);
+                handleActionFetchProducts();
+                handleActionFetchClients();
+                handleActionFetchSales();
+                handleActionFetchPayments();
                 break;
         }
     }
 
-    private void handleActionAddSale(Intent paramIntent) {
+
+    private boolean handleActionAdd(String title, Messenger msgr, JsonSpiceRequest req, Bundle data, String toInsert){
         Message msg = new Message();
-        Bundle data = new Bundle();
-        data.putString(MSG_PARAM_TYPE, MSG_TYPE_SALE);
-        data.putBoolean(MSG_ADDED, false);
-        Sale sale = paramIntent.getParcelableExtra(EXTRA_PARAM_SALE);
-        Messenger msgr = (Messenger) paramIntent.getExtras().get(EXTRA_PARAM_MESSENGER);
-        SalesSpiceRequest request = new SalesSpiceRequest(sale.getUserId());
         try {
-            String clientJson = new Gson().toJson(sale);
-            JsonElement response = request.insertData(clientJson);
+            JsonElement response = req.insertData(toInsert);
             JsonObject r = response.getAsJsonObject();
             data.putString("message", "Unknown Error");
             if (r != null) {
                 if (r.has("_id")) {
-                    data.putString("message", "Sale was added successful.");
-                    data.putString("user_id", sale.getUserId());
+                    data.putString("message", title+" was added successful.");
+                    data.putString("user_id", getUserId());
                     data.putString("_id", r.get("_id").getAsString());
-
+                    data.putString("json",r.toString());
                     data.putBoolean(MSG_ADDED, true);
                 } else {
-                    data.putString("message", "Cannot insert sale, try again later.");
+                    data.putString("message", "Cannot insert, try again later.");
                 }
             }
         } catch (IOException e) {
-
-            data.putString("message", "Couldn't insert sale due to IOException");
-
+            data.putString("message", "Couldn't insert due to IOException");
             e.printStackTrace();
         }
         msg.setData(data);
         sendMessage(msg, msgr);
+        return data.getBoolean(MSG_ADDED);
     }
 
-    private void handleActionAddClient(Intent paramIntent) {
+    private boolean handleActionUpdate(String title,String elementid, Messenger msgr, JsonSpiceRequest req, Bundle data, String toInsert){
         Message msg = new Message();
-        Bundle data = new Bundle();
-        data.putString(MSG_PARAM_TYPE, MSG_TYPE_CLIENT);
-        data.putBoolean(MSG_ADDED, false);
-        Client client = paramIntent.getParcelableExtra(EXTRA_PARAM_CLIENT);
-        client.setAddressGPS(new GoogleGeocodingSpiceRequest(client.getAddress()).loadLocationFromNetwork());
-        Log.v(LOG_TAG, "GPS for " + client.getName() + ": " + client.getAddressGPS().toString());
-        Messenger msgr = (Messenger) paramIntent.getExtras().get(EXTRA_PARAM_MESSENGER);
-        ClientsSpiceRequest request = new ClientsSpiceRequest(client.getUserId());
         try {
-            String clientJson = new Gson().toJson(client);
-            JsonElement response = request.insertData(getUrl(client.getUserId(), JsonColumns.ROW_CLIENTS_ID), clientJson);
-            JsonObject r = response.getAsJsonObject();
-            data.putString("message", "Unknown Error");
-            if (r != null) {
-                if (r.has("_id")) {
-                    data.putString("message", "Client was added successful.");
-                    data.putString("user_id", client.getUserId());
-                    data.putString("_id", r.get("_id").getAsString());
-
-                    data.putBoolean(MSG_ADDED, true);
-                } else {
-                    data.putString("message", "Cannot insert client, try again later.");
-                }
-            }
-        } catch (IOException e) {
-
-            data.putString("message", "Couldn't insert client due to IOException");
-
-            e.printStackTrace();
-        }
-        msg.setData(data);
-        sendMessage(msg, msgr);
-    }
-
-    private void handleActionAddProduct(Intent paramIntent) {
-        Message msg = new Message();
-        Bundle data = new Bundle();
-        data.putString(MSG_PARAM_TYPE, MSG_TYPE_PRODUCT);
-        data.putBoolean(MSG_ADDED, false);
-        Product product = paramIntent.getParcelableExtra(EXTRA_PARAM_PRODUCT);
-        Messenger msgr = (Messenger) paramIntent.getExtras().get(EXTRA_PARAM_MESSENGER);
-        ProductsSpiceRequest request = new ProductsSpiceRequest(product.getUserId());
-        try {
-            String clientJson = new Gson().toJson(product);
-            JsonElement response = request.insertData(clientJson);
-            JsonObject r = response.getAsJsonObject();
-            data.putString("message", "Unknown Error");
-            if (r != null) {
-                if (r.has("_id")) {
-                    data.putString("message", "Product was added successful.");
-                    data.putString("user_id", product.getUserId());
-                    data.putString("_id", r.get("_id").getAsString());
-
-                    data.putBoolean(MSG_ADDED, true);
-                } else {
-                    data.putString("message", "Cannot insert product, try again later.");
-                }
-            }
-        } catch (IOException e) {
-
-            data.putString("message", "Couldn't insert product due to IOException");
-
-            e.printStackTrace();
-        }
-        msg.setData(data);
-        sendMessage(msg, msgr);
-    }
-
-    private void handleActionUpdateClient(Intent paramIntent) {
-        Message msg = new Message();
-        Bundle data = new Bundle();
-        data.putString(MSG_PARAM_TYPE, MSG_TYPE_CLIENT);
-        data.putBoolean(MSG_ADDED, false);
-        Client client = paramIntent.getParcelableExtra(EXTRA_PARAM_CLIENT);
-//    String token = paramIntent.getStringExtra(EXTRA_PARAM_TOKEN);
-        String token = getToken();
-        String userid = client.getUserId();
-        String clientid = client.getId();
-        client.setAddressGPS(new GoogleGeocodingSpiceRequest(client.getAddress()).loadLocationFromNetwork());
-        Log.v(LOG_TAG, "GPS for " + client.getName() + ": " + client.getAddressGPS().toString());
-        Messenger msgr = (Messenger) paramIntent.getExtras().get(EXTRA_PARAM_MESSENGER);
-        ClientsSpiceRequest request = new ClientsSpiceRequest(userid);
-        try {
-            client.setId(null);
-            String clientJson = new Gson().toJson(client);
-            Boolean response = request.updateData(clientJson, clientid, token);
+            Boolean response = req.updateData(toInsert, elementid);
 
             data.putString("message", "Unknown Error");
             if (response) {
 
-                data.putString("message", "Client was updated successful.");
-                data.putString("user_id", userid);
-                data.putString("_id", clientid);
+                data.putString("message", title+" was updated successful.");
+                data.putString("user_id", getUserId());
+                data.putString("_id", elementid);
 
                 data.putBoolean(MSG_ADDED, true);
             } else {
@@ -576,47 +485,76 @@ public class SyncDataService extends IntentService {
         }
         msg.setData(data);
         sendMessage(msg, msgr);
+        return data.getBoolean(MSG_ADDED);
     }
 
-    private void handleActionUpdateProduct(Intent paramIntent) {
+    private void handleActionAddSale(Intent paramIntent) {
+
+        Bundle data = new Bundle();
+        data.putString(MSG_PARAM_TYPE, MSG_TYPE_SALE);
+        data.putBoolean(MSG_ADDED, false);
+        Sale sale = paramIntent.getParcelableExtra(EXTRA_PARAM_SALE);
+        Messenger msgr = (Messenger) paramIntent.getExtras().get(EXTRA_PARAM_MESSENGER);
+        SalesSpiceRequest request = new SalesSpiceRequest(getToken(),getUserId());
+        String saleJson = new Gson().toJson(sale);
+        handleActionAdd("Sale",msgr,request,data,saleJson);
+    }
+
+    private void handleActionAddClient(Intent paramIntent) {
+        Bundle data = new Bundle();
+        data.putString(MSG_PARAM_TYPE, MSG_TYPE_CLIENT);
+        data.putBoolean(MSG_ADDED, false);
+        Client client = paramIntent.getParcelableExtra(EXTRA_PARAM_CLIENT);
+        client.setAddressGPS(new GoogleGeocodingSpiceRequest(client.getAddress()).loadLocationFromNetwork());
+        Log.v(LOG_TAG, "GPS for " + client.getName() + ": " + client.getAddressGPS().toString());
+        Messenger msgr = (Messenger) paramIntent.getExtras().get(EXTRA_PARAM_MESSENGER);
+        ClientsSpiceRequest request = new ClientsSpiceRequest(getToken(),getUserId());
+        String clientJson = new Gson().toJson(client);
+        handleActionAdd("Client",msgr,request,data,clientJson);
+    }
+
+    private void handleActionAddProduct(Intent paramIntent) {
         Message msg = new Message();
         Bundle data = new Bundle();
         data.putString(MSG_PARAM_TYPE, MSG_TYPE_PRODUCT);
         data.putBoolean(MSG_ADDED, false);
         Product product = paramIntent.getParcelableExtra(EXTRA_PARAM_PRODUCT);
-        String token = getToken();
-        String userid = product.getUserId();
+        Messenger msgr = (Messenger) paramIntent.getExtras().get(EXTRA_PARAM_MESSENGER);
+        ProductsSpiceRequest request = new ProductsSpiceRequest(getToken(),getUserId());
+        String productJson = new Gson().toJson(product);
+        handleActionAdd("Product",msgr,request,data,productJson);
+    }
+
+    private void handleActionUpdateClient(Intent paramIntent) {
+
+        Bundle data = new Bundle();
+        data.putString(MSG_PARAM_TYPE, MSG_TYPE_CLIENT);
+        data.putBoolean(MSG_ADDED, false);
+        Client client = paramIntent.getParcelableExtra(EXTRA_PARAM_CLIENT);
+        String clientid = client.getId();
+        client.setAddressGPS(new GoogleGeocodingSpiceRequest(client.getAddress()).loadLocationFromNetwork());
+        Log.v(LOG_TAG, "GPS for " + client.getName() + ": " + client.getAddressGPS().toString());
+        Messenger msgr = (Messenger) paramIntent.getExtras().get(EXTRA_PARAM_MESSENGER);
+        ClientsSpiceRequest request = new ClientsSpiceRequest(getUserId(),getToken());
+        client.setId(null);
+        String clientJson = new Gson().toJson(client);
+        handleActionUpdate("Client", clientid, msgr, request, data, clientJson);
+    }
+
+    private void handleActionUpdateProduct(Intent paramIntent) {
+        Bundle data = new Bundle();
+        data.putString(MSG_PARAM_TYPE, MSG_TYPE_PRODUCT);
+        data.putBoolean(MSG_ADDED, false);
+        Product product = paramIntent.getParcelableExtra(EXTRA_PARAM_PRODUCT);
         String productId = product.getId();
         Messenger msgr = (Messenger) paramIntent.getExtras().get(EXTRA_PARAM_MESSENGER);
-        ProductsSpiceRequest request = new ProductsSpiceRequest(userid);
-        try {
-            product.setId(null);
-            String clientJson = new Gson().toJson(product);
-            Boolean response = request.updateData(clientJson, productId, token);
-            data.putString("message", "Unknown Error");
-            if (response) {
-
-                data.putString("message", "Product was updated successful.");
-                data.putString("user_id", userid);
-                data.putString("_id", productId);
-
-                data.putBoolean(MSG_ADDED, true);
-            } else {
-                data.putString("message", "Cannot insert product, try again later.");
-            }
-
-        } catch (IOException e) {
-
-            data.putString("message", "Couldn't insert product due to IOException");
-
-            e.printStackTrace();
-        }
-        msg.setData(data);
-        sendMessage(msg, msgr);
+        ProductsSpiceRequest request = new ProductsSpiceRequest(getToken(),getUserId());
+        product.setId(null);
+        String clientJson = new Gson().toJson(product);
+        handleActionUpdate("Product",productId,msgr,request,data,clientJson);
     }
 
     private void handleActionDoPayment(Intent paramIntent) {
-        Message msg = new Message();
         Bundle data = new Bundle();
         data.putString(MSG_PARAM_TYPE, MSG_TYPE_PAYMENT);
         data.putBoolean("paid", false);
@@ -630,32 +568,9 @@ public class SyncDataService extends IntentService {
         pay.setUserId(userId);
         pay.setPrice(amount);
         pay.setSaleId(saleId);
-        PaymentsSpiceRequest request = new PaymentsSpiceRequest(userId);
-        try {
-            String payment = new Gson().toJson(pay);
-            JsonElement response = request.insertData(getUrl(userId, JsonColumns.ROW_PAYMENTS_ID), payment);
-            JsonObject r = response.getAsJsonObject();
-            data.putString("message", "Unknown Error");
-            if (r != null) {
-                if (r.has("_id")) {
-                    data.putString("message", "Payment was successful.");
-                    data.putString("user_id", userId);
-                    data.putString("sale_id", saleId);
-                    data.putString("_id", r.get("_id").getAsString());
-                    data.putDouble("amount", amount);
-                    data.putBoolean("paid", true);
-                } else {
-                    data.putString("message", "Cannot do payment, try again later.");
-                }
-            }
-        } catch (IOException e) {
-
-            data.putString("message", "Couldn't do payment due to IOException");
-
-            e.printStackTrace();
-        }
-        msg.setData(data);
-        sendMessage(msg, msgr);
+        PaymentsSpiceRequest request = new PaymentsSpiceRequest(getToken(),getUserId());
+        String payment = new Gson().toJson(pay);
+        handleActionAdd("Payment",msgr,request,data,payment);
     }
 
     private void sendMessage(Message ifExists, Messenger messenger) {

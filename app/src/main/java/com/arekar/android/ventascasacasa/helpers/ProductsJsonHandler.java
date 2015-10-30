@@ -38,16 +38,24 @@ public class ProductsJsonHandler extends AbstractJsonHandler<Product> {
         StringBuilder sb = new StringBuilder();
         sb.append("");
         for(Integer pos:positions){
-            sb.append(itemsList.get(pos).getName()).append(", ");
+            sb.append(itemsList.get(pos).getName()).append("\n");
         }
         return sb.toString();
+
+    }
+    public double getProductsPriceFromPosition(Integer[] positions){
+        double total = 0;
+        for(Integer pos:positions){
+           total+=itemsList.get(pos).getPrice();
+        }
+        return total;
 
     }
 
     public String[] getProductsTitle(){
         List<String> titles = new ArrayList<>();
         for(Product item:itemsList){
-            titles.add(item.getName());
+            titles.add(item.getName()+" - "+Methods.getMoneyString(item.getPrice()));
         }
         return titles.toArray(new String[titles.size()]);
     }

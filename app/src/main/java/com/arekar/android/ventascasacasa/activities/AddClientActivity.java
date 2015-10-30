@@ -1,13 +1,11 @@
 package com.arekar.android.ventascasacasa.activities;
 
 import android.content.ComponentName;
-import android.content.ContentResolver;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.pm.ResolveInfo;
 import android.net.Uri;
 import android.os.Bundle;
-import android.app.Activity;
 import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
@@ -22,12 +20,8 @@ import android.view.View;
 import android.widget.ImageButton;
 import android.support.design.widget.TextInputLayout;
 import android.widget.EditText;
-import android.widget.Button;
-import android.widget.Toast;
 
 import com.arekar.android.ventascasacasa.R;
-import com.arekar.android.ventascasacasa.helpers.Methods;
-import com.arekar.android.ventascasacasa.helpers.RealPathUtil;
 import com.arekar.android.ventascasacasa.imgurmodel.ImageResponse;
 import com.arekar.android.ventascasacasa.imgurmodel.Upload;
 import com.arekar.android.ventascasacasa.model.Client;
@@ -36,13 +30,11 @@ import com.arekar.android.ventascasacasa.service.UploadService;
 import com.bumptech.glide.Glide;
 import com.mobsandgeeks.saripaar.ValidationError;
 import com.mobsandgeeks.saripaar.Validator;
-import com.mobsandgeeks.saripaar.annotation.Digits;
 import com.mobsandgeeks.saripaar.annotation.Email;
 import com.mobsandgeeks.saripaar.annotation.NotEmpty;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -287,7 +279,7 @@ public class AddClientActivity extends BaseActivity implements View.OnClickListe
         newClient.setPhone(getInputPhone().getText().toString());
         newClient.setEnabled(true);
         if(update){
-            SyncDataService.startActionUpdateClient(this, newClient, getMessenger(), getToken());
+            SyncDataService.startActionUpdateClient(this, newClient, getMessenger());
         }
         else {
             SyncDataService.startActionAddClient(this, newClient, getMessenger());
@@ -315,7 +307,7 @@ public class AddClientActivity extends BaseActivity implements View.OnClickListe
 
                     snackText = getInputName().getText().toString() + " added.";
                     if(update) snackText = getInputName().getText().toString() + " updated.";
-                    SyncDataService.startActionFetchClients(this, getUserId());
+                    SyncDataService.startActionFetchClients(this);
                 }
                 Snackbar snack = Snackbar.make(coord, snackText, Snackbar.LENGTH_LONG);
                 snack.show();

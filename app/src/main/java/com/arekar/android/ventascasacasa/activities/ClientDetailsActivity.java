@@ -34,6 +34,7 @@ import com.arekar.android.ventascasacasa.helpers.Methods;
 import com.arekar.android.ventascasacasa.helpers.PaymentsJsonHandler;
 import com.arekar.android.ventascasacasa.helpers.SalesJsonHandler;
 import com.arekar.android.ventascasacasa.model.Client;
+import com.arekar.android.ventascasacasa.model.Payment;
 import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonColumns;
 import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonCursor;
 import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonSelection;
@@ -126,7 +127,7 @@ public class ClientDetailsActivity extends BaseActivity implements LoaderManager
         getSupportLoaderManager().initLoader(LOADER_CLIENT, null, this);
         getSupportLoaderManager().initLoader(LOADER_SALES, null, this);
         getSupportLoaderManager().initLoader(LOADER_PAYMENTS, null, this);
-        SyncDataService.startActionFetchPayments(this,getUserId());
+        SyncDataService.startActionFetchPayments(this);
 
     }
 
@@ -144,13 +145,15 @@ public class ClientDetailsActivity extends BaseActivity implements LoaderManager
 
         switch (type) {
             case SyncDataService.MSG_TYPE_PAYMENT:
-                Boolean paid = data.getBoolean("paid", false);
+                Boolean paid = data.getBoolean(SyncDataService.MSG_ADDED, false);
                 String msgtxt = data.getString("message");
                 String snackText = msgtxt;
                 if (paid) {
-                    Double amount = data.getDouble("amount");
+                    Payment nPay = new Gson().fromJson(data.getString("json"),Payment.class);
+                    //Double amount = data.getDouble("amount");
+                    Double amount = nPay.getPrice();
                     snackText = current.getName() + " paid " + Methods.getMoneyString(amount) + "";
-                    SyncDataService.startActionFetchPayments(this,getUserId());
+                    SyncDataService.startActionFetchPayments(this);
                 }
                 Snackbar snack = Snackbar.make(coordinatorLayout, snackText, Snackbar.LENGTH_SHORT);
 //                View view = snack.getView();
@@ -305,7 +308,7 @@ public class ClientDetailsActivity extends BaseActivity implements LoaderManager
         }
 
         Log.d(LOG_TAG, "No data received");
-        SyncDataService.startActionFetchPayments(this, getUserId());
+        SyncDataService.startActionFetchPayments(this);
 
     }
 
@@ -319,7 +322,7 @@ public class ClientDetailsActivity extends BaseActivity implements LoaderManager
             return;
         }
         Log.d(LOG_TAG, "No data received");
-        SyncDataService.startActionFetchClients(this, getUserId());
+        SyncDataService.startActionFetchClients(this);
     }
 
     private void loadSales(JsonCursor c) {
@@ -332,7 +335,7 @@ public class ClientDetailsActivity extends BaseActivity implements LoaderManager
             Log.d(TAG, "disqueSiCargo");
         } else {
             Ln.d("Didn't get data, syncing.");
-            SyncDataService.startActionFetchSales(this, getUserId());
+            SyncDataService.startActionFetchSales(this);
         }
 
     }
@@ -346,7 +349,7 @@ public class ClientDetailsActivity extends BaseActivity implements LoaderManager
             loadClient();
         } else {
             Log.d(LOG_TAG, "No data received");
-            SyncDataService.startActionFetchClients(this, getUserId());
+            SyncDataService.startActionFetchClients(this);
         }
     }
 

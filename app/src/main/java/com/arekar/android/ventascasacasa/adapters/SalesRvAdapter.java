@@ -10,7 +10,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
@@ -149,7 +148,7 @@ public class SalesRvAdapter extends RecyclerView.Adapter<SalesRvAdapter.SaleView
                         if (act != null) {
                             ms = ba.getMessenger();
                         }
-                        SyncDataService.startActionDoPayment(materialDialog.getContext(), cr.getUserId(), cr.getId(), amount,ms);
+                        SyncDataService.startActionDoPayment(materialDialog.getContext(), cr.getId(), amount,ms);
                     }
                 })
                 .build();

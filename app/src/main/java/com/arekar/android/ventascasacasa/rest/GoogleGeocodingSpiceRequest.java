@@ -10,12 +10,14 @@ import com.google.api.client.http.HttpResponse;
 import com.google.api.client.json.gson.GsonFactory;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.octo.android.robospice.GoogleHttpClientSpiceService;
 import com.octo.android.robospice.request.googlehttpclient.GoogleHttpClientSpiceRequest;
 
 import org.json.JSONObject;
 
+import java.io.IOException;
 import java.io.InputStreamReader;
 
 import roboguice.util.temp.Ln;
@@ -23,7 +25,7 @@ import roboguice.util.temp.Ln;
 /**
  * Created by yknx4 on 25/10/2015.
  */
-public class GoogleGeocodingSpiceRequest extends GoogleHttpClientSpiceRequest<JsonObject> {
+public class GoogleGeocodingSpiceRequest extends JsonSpiceRequest<JsonObject> {
 
     String baseurl = "https://maps.googleapis.com/maps/api/geocode/json";
     private String address;
@@ -36,18 +38,31 @@ public class GoogleGeocodingSpiceRequest extends GoogleHttpClientSpiceRequest<Js
     }
 
     @Override
-    public JsonObject loadDataFromNetwork() throws Exception {
+    public JsonObject loadDataFromNetwork() throws IOException {
         Ln.d("Call web service " + baseurl);
         GenericUrl gUrl = new GenericUrl(baseurl);
         gUrl.put("key", Constants.GOOGLE_HTTP_ID);
         gUrl.put("address", address);
         Ln.d("Generic URL: " + gUrl.toString());
-
-        HttpRequest request = getHttpRequestFactory().buildGetRequest(gUrl);
-        request.setParser(new GsonFactory().createJsonObjectParser());
-        HttpResponse localObject = request.execute();
-        return new Gson().fromJson(new InputStreamReader(localObject.getContent()), JsonObject.class);
+        return loadDataFromNetwork(gUrl).getAsJsonObject();
     }
+
+    @Override
+    public Boolean updateData(String element, String elementId) throws IOException {
+        return null;
+    }
+
+
+    @Override
+    public JsonElement insertData(String data) throws IOException {
+        return null;
+    }
+
+    @Override
+    public boolean deleteFromNetwork(String elementid) throws IOException {
+        return false;
+    }
+
 
     public AddressGPS loadLocationFromNetwork() {
         AddressGPS add = new AddressGPS();

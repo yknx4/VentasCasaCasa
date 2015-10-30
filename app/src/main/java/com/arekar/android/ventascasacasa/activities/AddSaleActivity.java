@@ -1,9 +1,7 @@
 package com.arekar.android.ventascasacasa.activities;
 
-import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
-import android.app.Activity;
 import android.os.Message;
 import android.os.Messenger;
 import android.support.design.widget.CoordinatorLayout;
@@ -27,7 +25,6 @@ import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -96,7 +93,7 @@ public class AddSaleActivity extends BaseActivity implements View.OnClickListene
                     snackText = "Sale done.";
 
 //                    if(update) snackText = getInputName().getText().toString() + " updated.";
-                    SyncDataService.startActionFetchSales(this, getUserId());
+                    SyncDataService.startActionFetchSales(this);
                 }
                 Snackbar snack = Snackbar.make(coordinationLayout, snackText, Snackbar.LENGTH_LONG);
                 snack.show();
@@ -119,12 +116,12 @@ public class AddSaleActivity extends BaseActivity implements View.OnClickListene
     };
     private static final String TAG = "AddSaleActivity";
 
-    Integer[] selectedProducts;
+    Integer[] selectedProducts=null;
     private void productChooser(){
         new MaterialDialog.Builder(this)
                 .title("Pick product")
                 .items(productsJsonHandler.getProductsTitle())
-                .itemsCallbackMultiChoice(null, new MaterialDialog.ListCallbackMultiChoice() {
+                .itemsCallbackMultiChoice(selectedProducts, new MaterialDialog.ListCallbackMultiChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
                         /**
@@ -135,6 +132,7 @@ public class AddSaleActivity extends BaseActivity implements View.OnClickListene
                         selectedProducts = which;
                         Snackbar.make(coordinationLayout,"Selected products",Snackbar.LENGTH_SHORT).show();
                         getInputProducts().setText(productsJsonHandler.getProductsStringFromPosition(which));
+                        getInputPrice().setText(String.valueOf(productsJsonHandler.getProductsPriceFromPosition(which)));
                         return true;
                     }
                 })
