@@ -112,6 +112,10 @@
     <string name="notifaction_success">Upload complete</string>
     <string name="notification_share_link">Share</string>
     <string name="notification_fail">Upload failed</string>
+    <string name="error_invalid_password">Password is not valid</string>
+    <string name="error_field_required">This field is required</string>
+    <string name="error_invalid_email">This email is not vaild</string>
+    <string name="error_incorrect_password">Wrong Password</string>
     <string-array name="product_colors">
         <item>Red</item>
         <item>White</item>

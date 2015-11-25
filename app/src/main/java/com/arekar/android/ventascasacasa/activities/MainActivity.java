@@ -150,10 +150,7 @@ public class MainActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-
-
-
-
+       checkLogin();
 
         setContentView(R.layout.activity_main);
         setupToolbar();
@@ -215,6 +212,12 @@ public class MainActivity extends BaseActivity {
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
             return true;
+        }
+        if(id== R.id.action_logout){
+            setToken(INVALID_TOKEN);
+            setUserId(INVALID_UID);
+            checkLogin();
+            //finish();
         }
 
         return super.onOptionsItemSelected(item);

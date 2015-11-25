@@ -19,7 +19,7 @@ import roboguice.util.temp.Ln;
 public class LoginValidateSpiceRequest extends JsonSpiceRequest<JsonObject>
 {
   private String baseUrl = "http://sales-yknx4.rhcloud.com/login";
-  private String token;
+
 
   public LoginValidateSpiceRequest(String paramString)
   {
@@ -32,8 +32,8 @@ public class LoginValidateSpiceRequest extends JsonSpiceRequest<JsonObject>
   {
     Ln.d("Call web service " + this.baseUrl);
     GenericUrl localObject = new GenericUrl(this.baseUrl);
-    localObject.put("token", this.token);
-    Ln.d("Token: " + this.token);
+    localObject.put("token", getToken());
+    Ln.d("Token: " + getToken());
     Ln.d("Generic URL: " + localObject.toString());
     return loadDataFromNetwork(localObject).getAsJsonObject();
   }
