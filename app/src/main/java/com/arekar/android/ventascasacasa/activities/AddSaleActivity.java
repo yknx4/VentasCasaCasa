@@ -1,5 +1,6 @@
 package com.arekar.android.ventascasacasa.activities;
 
+import android.content.Context;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Message;
@@ -16,6 +17,7 @@ import android.widget.Button;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.arekar.android.ventascasacasa.R;
 import com.arekar.android.ventascasacasa.helpers.ProductsJsonHandler;
+import com.arekar.android.ventascasacasa.helpers.SalesHelper;
 import com.arekar.android.ventascasacasa.model.Sale;
 import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonColumns;
 import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonCursor;
@@ -152,6 +154,7 @@ public class AddSaleActivity extends BaseActivity implements View.OnClickListene
     Integer[] selectedDays=null;
 
     private void daysChooser(){
+        final Context ctx = this;
         new MaterialDialog.Builder(this)
                 .title("Pick days")
                 .items(R.array.days)
@@ -165,7 +168,7 @@ public class AddSaleActivity extends BaseActivity implements View.OnClickListene
                          **/
                         selectedDays = which;
                         Snackbar.make(coordinationLayout, "Selected days", Snackbar.LENGTH_SHORT).show();
-//                        getInputDays().setText(productsJsonHandler.getProductsStringFromPosition(which));
+                        getInputDays().setText(SalesHelper.getDayStringFromPosition(ctx,which));
                         return true;
                     }
                 })
@@ -176,9 +179,10 @@ public class AddSaleActivity extends BaseActivity implements View.OnClickListene
     Integer[] selectedTimes=null;
 
     private void timeChooser(){
+        final Context ctx = this;
         new MaterialDialog.Builder(this)
                 .title("Pick hours")
-                .items(R.array.days)
+                .items(R.array.time)
                 .itemsCallbackMultiChoice(selectedTimes, new MaterialDialog.ListCallbackMultiChoice() {
                     @Override
                     public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
@@ -189,7 +193,7 @@ public class AddSaleActivity extends BaseActivity implements View.OnClickListene
                          **/
                         selectedTimes = which;
                         Snackbar.make(coordinationLayout, "Selected hours", Snackbar.LENGTH_SHORT).show();
-//                        getInputTime().setText(productsJsonHandler.getProductsStringFromPosition(which));
+                        getInputTime().setText(SalesHelper.getTimeStringFromProsition(ctx,which));
                         return true;
                     }
                 })

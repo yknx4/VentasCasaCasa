@@ -135,6 +135,16 @@ public abstract class Methods
     return currencyFormatter.format(moni);
   }
 
+  public static String getStringFromStringArray(String[] array, boolean newLine){
+    StringBuilder sb = new StringBuilder();
+    String separator = newLine?"\n":", ";
+    sb.append("");
+    for(String str:array){
+      sb.append(str).append(separator);
+    }
+    return sb.toString();
+  }
+
 }
 
 /* Location:           D:\Apps\Apk2Java\tools\classes-dex2jar.jar

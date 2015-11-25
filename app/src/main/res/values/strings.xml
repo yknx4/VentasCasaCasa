@@ -112,10 +112,6 @@
     <string name="notifaction_success">Upload complete</string>
     <string name="notification_share_link">Share</string>
     <string name="notification_fail">Upload failed</string>
-    <string name="error_invalid_password">Password is not valid</string>
-    <string name="error_field_required">This field is required</string>
-    <string name="error_invalid_email">This email is not vaild</string>
-    <string name="error_incorrect_password">Wrong Password</string>
     <string-array name="product_colors">
         <item>Red</item>
         <item>White</item>
@@ -134,6 +130,32 @@
         <item>Jueves</item>
         <item>Viernes</item>
         <item>Sábado</item>
+    </string-array>
+    <string-array name="time">
+        <item>0:00am</item>
+        <item>1:00am</item>
+        <item>2:00am</item>
+        <item>3:00am</item>
+        <item>4:00am</item>
+        <item>5:00am</item>
+        <item>6:00am</item>
+        <item>7:00am</item>
+        <item>8:00am</item>
+        <item>9:00am</item>
+        <item>10:00am</item>
+        <item>11:00am</item>
+        <item>12:00pm</item>
+        <item>1:00pm</item>
+        <item>2:00pm</item>
+        <item>3:00pm</item>
+        <item>4:00pm</item>
+        <item>5:00pm</item>
+        <item>6:00pm</item>
+        <item>7:00pm</item>
+        <item>8:00pm</item>
+        <item>9:00pm</item>
+        <item>10:00pm</item>
+        <item>11:00pm</item>
     </string-array>
     <string name="title_activity_login">Sign in</string>
 
