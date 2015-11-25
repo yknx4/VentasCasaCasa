@@ -39,7 +39,7 @@ public class ClientsSpiceRequest extends JsonSpiceRequest<JsonArray>
    */
   public ClientsSpiceRequest(@NonNull String userId,@NonNull String token)
   {
-    super(JsonArray.class, userId, token);
+    super(JsonArray.class, token, userId);
     }
 
   public JsonArray loadDataFromNetwork()
@@ -71,7 +71,6 @@ public class ClientsSpiceRequest extends JsonSpiceRequest<JsonArray>
     Ln.d("Call web service " + updateUrl);
     GenericUrl gUrl = new GenericUrl(updateUrl+elementid);
     gUrl.put("token",getToken());
-
     Ln.d("Generic URL: " + gUrl.toString());
     Ln.d("Inserting: " + element);
     return updateData(gUrl,element);

@@ -16,6 +16,7 @@ import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.arekar.android.ventascasacasa.Constants;
 import com.arekar.android.ventascasacasa.R;
@@ -91,7 +92,8 @@ public class ProductsFragment extends Fragment
   @Override
   public boolean onContextItemSelected(MenuItem item) {
     Log.d(LOG_TAG, "Clicked: " + item.getTitle().toString() + " in " + adapter.getPosition());
-//    Toast.makeText(getContext(),"Clicked "+ item.getTitle().toString(),Toast.LENGTH_SHORT).show();
+    Toast.makeText(getContext(), "Clicked " +item.getTitle().toString(), Toast.LENGTH_SHORT).show();
+
     switch (item.getTitle().toString()){
       case "Delete":
         SyncDataService.startActionDeleteProduct(getContext(), adapter.getPosition());

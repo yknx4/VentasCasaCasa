@@ -164,9 +164,9 @@ public class ClientRvAdapter extends AbstractAdapter<ClientRvAdapter.ClientViewH
 
         @Override
         public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-            menu.setHeaderTitle("Choose an action");
-            menu.add(0, v.getId(), 0, "Edit");//groupId, itemId, order, title
-            menu.add(0, v.getId(), 0, "Delete");
+            menu.setHeaderTitle(R.string.action_client);
+            menu.add(0, v.getId(), 0, "Edit client");//groupId, itemId, order, title
+            menu.add(0, v.getId(), 0, "Delete client");
         }
     }
 }

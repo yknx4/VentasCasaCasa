@@ -6,6 +6,7 @@ import android.util.Log;
 
 import com.arekar.android.ventascasacasa.R;
 import com.arekar.android.ventascasacasa.helpers.PaymentsJsonHandler;
+import com.arekar.android.ventascasacasa.model.Payment;
 import com.arekar.android.ventascasacasa.model.Sale;
 import com.google.api.client.util.DateTime;
 
@@ -124,9 +125,35 @@ public class SaleController {
         int daysBetween = Days.daysBetween(first,current).getDays();
         daysBetween %= item.getPaymentDue();
         Calendar cal = Calendar.getInstance();
+        /*CLEAN*/
+        cal.set(Calendar.HOUR,1);
+        cal.set(Calendar.MINUTE,0);
+        cal.set(Calendar.SECOND,0);
+        cal.set(Calendar.MILLISECOND,0);
+        /*CLEAN*/
         cal.add(Calendar.DAY_OF_YEAR,daysBetween);
         int closestDate = getClosestDayCount(cal.get(Calendar.DAY_OF_WEEK),item.getAvailableDays());
         cal.add(Calendar.DAY_OF_YEAR,closestDate);
+        if(payments!=null){
+            Payment last = payments.getLastPayment(item.getId());
+            Long dateMs = Long.valueOf(last.getDate());
+            Date lDate = new Date(dateMs);
+            Calendar lCal = Calendar.getInstance();
+            lCal.setTime(lDate);
+            /*CLEAN*/
+            lCal.set(Calendar.HOUR,1);
+            lCal.set(Calendar.MINUTE,0);
+            lCal.set(Calendar.SECOND,0);
+            lCal.set(Calendar.MILLISECOND, 0);
+            /*CLEAN*/
+            Log.d(TAG,"Difference: "+(cal.getTimeInMillis()-lCal.getTimeInMillis()));
+            if(cal.getTimeInMillis()==lCal.getTimeInMillis()){
+                Log.d(TAG,"Paid already done today. Next is...");
+                cal.add(Calendar.DAY_OF_YEAR,daysBetween);
+                int closestDateAgain = getClosestDayCount(cal.get(Calendar.DAY_OF_WEEK),item.getAvailableDays());
+                cal.add(Calendar.DAY_OF_YEAR,closestDateAgain);
+            }
+        }
         return cal.getTime();
     }
 

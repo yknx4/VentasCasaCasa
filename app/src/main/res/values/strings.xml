@@ -171,4 +171,6 @@
     <string name="permission_rationale">"Contacts permissions are needed for providing email
         completions."
     </string>
+    <string name="action_client">Choose an action for client</string>
+    <string name="action_product">Choose an action for product</string>
 </resources>

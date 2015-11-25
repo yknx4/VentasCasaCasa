@@ -232,13 +232,13 @@ public class SyncDataService extends IntentService {
      * Start action delete product.
      *
      * @param context   the context
-     * @param client_id the client id
+     * @param product_id the client id
      */
-    public static void startActionDeleteProduct(Context context, String client_id) {
-        Log.d(LOG_TAG, "Deleting product " + client_id);
+    public static void startActionDeleteProduct(Context context, String product_id) {
+        Log.d(LOG_TAG, "Deleting product " + product_id);
         Intent localIntent = new Intent(context, SyncDataService.class);
         localIntent.setAction(ACTION_DELETE_PRODUCT);
-        localIntent.putExtra(EXTRA_PARAM_PRODUCT_ID, client_id);
+        localIntent.putExtra(EXTRA_PARAM_PRODUCT_ID, product_id);
         context.startService(localIntent);
     }
 
@@ -389,7 +389,7 @@ public class SyncDataService extends IntentService {
         String clientid = inte.getStringExtra(EXTRA_PARAM_CLIENT_ID);
         String token = getToken();
         String userid = getUserId();
-        ClientsSpiceRequest req = new ClientsSpiceRequest(token,userid);
+        ClientsSpiceRequest req = new ClientsSpiceRequest(userid,token);
         if(handleActionDelete("Client", clientid,req)){
             handleActionFetchClients();
         }
@@ -411,12 +411,12 @@ public class SyncDataService extends IntentService {
     }
 
     private void handleActionDeleteProduct(Intent inte) {
-        String clientid = inte.getStringExtra(EXTRA_PARAM_PRODUCT_ID);
+        String productid = inte.getStringExtra(EXTRA_PARAM_PRODUCT_ID);
         String token = getToken();
         String userid = getUserId();
 
         ProductsSpiceRequest req = new ProductsSpiceRequest(token,userid);
-        if(handleActionDelete("Product", clientid,req)){
+        if(handleActionDelete("Product", productid,req)){
             handleActionFetchProducts();
         }
 
@@ -435,7 +435,7 @@ public class SyncDataService extends IntentService {
         String token = getToken();
         Updated localUpdated = checkIfUpdatedJson(getUrl(userId, JsonColumns.ROW_CLIENTS_ID), JsonColumns.ROW_CLIENTS_ID);
         if (localUpdated.isUpdated())
-            syncData(userId, localUpdated.getWhen(), JsonColumns.ROW_CLIENTS_ID, new ClientsSpiceRequest(token,userId));
+            syncData(userId, localUpdated.getWhen(), JsonColumns.ROW_CLIENTS_ID, new ClientsSpiceRequest(userId,token));
     }
 
     private void handleActionFetchSales() {

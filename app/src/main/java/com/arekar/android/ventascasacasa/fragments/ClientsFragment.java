@@ -13,10 +13,12 @@ import android.support.v4.content.Loader;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.view.ContextMenu;
 import android.view.LayoutInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import com.arekar.android.ventascasacasa.Constants;
 import com.arekar.android.ventascasacasa.R;
@@ -78,12 +80,13 @@ public class ClientsFragment extends BaseFragment
   @Override
   public boolean onContextItemSelected(MenuItem item) {
     Log.d(LOG_TAG, "Clicked: " + item.getTitle().toString() + " in " + adapter.getPosition());
+    Toast.makeText(getContext(), "Clicked " + item.getTitle().toString(), Toast.LENGTH_SHORT).show();
 //    Toast.makeText(getContext(),"Clicked "+ item.getTitle().toString(),Toast.LENGTH_SHORT).show();
     switch (item.getTitle().toString()){
-      case "Delete":
+      case "Delete client":
         SyncDataService.startActionDeleteClient(getContext(),adapter.getPosition());
         break;
-      case "Edit":
+      case "Edit client":
         Intent intent = new Intent(getContext(), AddClientActivity.class);
         intent.putExtra(AddClientActivity.BUNDLE_CLIENT,adapter.getClientById(adapter.getPosition()));
         startActivity(intent);

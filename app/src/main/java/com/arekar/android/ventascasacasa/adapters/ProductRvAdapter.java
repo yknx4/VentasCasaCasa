@@ -113,7 +113,7 @@ public class ProductRvAdapter extends AbstractAdapter<ProductRvAdapter.ProductVi
 
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-      menu.setHeaderTitle("Choose an action");
+      menu.setHeaderTitle(R.string.action_product);
       menu.add(0, v.getId(), 0, "Edit");//groupId, itemId, order, title
       menu.add(0, v.getId(), 0, "Delete");
     }

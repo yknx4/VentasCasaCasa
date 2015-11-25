@@ -21,6 +21,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -352,6 +353,8 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
             showProgress(false);
 
             if (success) {
+                Log.d("LoginActivity","Token: "+ftoken);
+                Log.d("LoginActivity","User id: "+fuserid);
                 boolean t;
                 t = setToken(ftoken);
                 t &= setUserId(fuserid);

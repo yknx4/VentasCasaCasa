@@ -37,14 +37,24 @@ public class PaymentsJsonHandler extends AbstractJsonHandler<Payment> {
      * @param saleId the sale id
      * @return the list of payments
      */
+    private List<Payment> fPays = null;
     public List<Payment> getPaymentsBySaleId(String saleId){
+        if(fPays!=null) return fPays;
         Log.d(TAG, "Looking for payments with sale id: " + saleId + " in " + itemsList.size() + " elements.");
         List<Payment> payments = new ArrayList<>();
         for(Payment pay: itemsList){
             if(pay.getSaleId().equals(saleId))payments.add(pay);
         }
         Log.d(TAG, "Found: " + payments.size());
+        fPays = payments;
         return payments;
+    }
+
+    public Payment getLastPayment(String saleId){
+        List<Payment> pays = getPaymentsBySaleId(saleId);
+        if (pays.size()==0) return null;
+        Payment last = pays.get(pays.size()-1);
+        return last;
     }
 
     /**

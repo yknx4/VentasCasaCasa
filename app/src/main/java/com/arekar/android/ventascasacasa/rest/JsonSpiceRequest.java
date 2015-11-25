@@ -1,6 +1,7 @@
 package com.arekar.android.ventascasacasa.rest;
 
 import android.support.annotation.NonNull;
+import android.util.Log;
 
 import com.google.api.client.http.ByteArrayContent;
 import com.google.api.client.http.EmptyContent;
@@ -53,8 +54,9 @@ public abstract class JsonSpiceRequest<T extends JsonElement> extends GoogleHttp
     public JsonSpiceRequest(Class<T> clazz, String token) {
         this(clazz);
         this.token = token;
+        Log.d(LOGT,"Global token: "+token);
     }
-
+     private static final String LOGT = JsonSpiceRequest.class.getSimpleName();
     /**
      * Instantiates a new Json spice request.
      *
@@ -65,6 +67,7 @@ public abstract class JsonSpiceRequest<T extends JsonElement> extends GoogleHttp
     public JsonSpiceRequest(Class<T> clazz, String token, String userid) {
         this(clazz, token);
         this.userid = userid;
+        Log.d(LOGT,"Global user id: "+userid);
     }
 
     @Override
