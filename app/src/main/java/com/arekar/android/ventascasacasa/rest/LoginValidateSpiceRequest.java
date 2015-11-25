@@ -16,14 +16,23 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import roboguice.util.temp.Ln;
 
+/**
+ * The type Login validate spice request.
+ * This is used to validate a token in the Web Service
+ */
 public class LoginValidateSpiceRequest extends JsonSpiceRequest<JsonObject>
 {
   private String baseUrl = "http://sales-yknx4.rhcloud.com/login";
   private String token;
 
-  public LoginValidateSpiceRequest(String paramString)
+  /**
+   * Instantiates a new Login validate spice request.
+   *
+   * @param token the token
+   */
+  public LoginValidateSpiceRequest(String token)
   {
-    super(JsonObject.class, paramString);
+    super(JsonObject.class, token);
 
   }
 

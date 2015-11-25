@@ -10,17 +10,27 @@ import java.io.IOException;
 
 import roboguice.util.temp.Ln;
 
+/**
+ * The type Login spice request.
+ * This is used to login to the web service.
+ */
 public class LoginSpiceRequest extends JsonSpiceRequest<JsonObject>
 {
   private String baseUrl = "http://sales-yknx4.rhcloud.com/login";
   private String password;
   private String user;
 
-  public LoginSpiceRequest(String paramString1, String paramString2)
+  /**
+   * Instantiates a new Login spice request.
+   *
+   * @param username the username
+   * @param password the password
+   */
+  public LoginSpiceRequest(String username, String password)
   {
     super(JsonObject.class);
-    this.user = paramString1;
-    this.password = paramString2;
+    this.user = username;
+    this.password = password;
   }
 
   public JsonObject loadDataFromNetwork()

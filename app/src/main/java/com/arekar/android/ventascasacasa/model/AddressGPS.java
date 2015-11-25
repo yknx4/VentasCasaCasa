@@ -9,6 +9,9 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ * The type Address gps.
+ */
 public class AddressGPS implements Parcelable {
 
   @Expose
@@ -29,11 +32,21 @@ public class AddressGPS implements Parcelable {
     return new EqualsBuilder().append(this.longitude, paramObject2.longitude).append(this.latitude, paramObject2.latitude).isEquals();
   }
 
+  /**
+   * Gets latitude.
+   *
+   * @return the latitude
+   */
   public Double getLatitude()
   {
     return this.latitude;
   }
 
+  /**
+   * Gets longitude.
+   *
+   * @return the longitude
+   */
   public Double getLongitude()
   {
     return this.longitude;
@@ -44,14 +57,24 @@ public class AddressGPS implements Parcelable {
     return new HashCodeBuilder().append(this.longitude).append(this.latitude).toHashCode();
   }
 
-  public void setLatitude(Double paramDouble)
+  /**
+   * Sets latitude.
+   *
+   * @param latitude the latitude
+   */
+  public void setLatitude(Double latitude)
   {
-    this.latitude = paramDouble;
+    this.latitude = latitude;
   }
 
-  public void setLongitude(Double paramDouble)
+  /**
+   * Sets longitude.
+   *
+   * @param longitude the longitude
+   */
+  public void setLongitude(Double longitude)
   {
-    this.longitude = paramDouble;
+    this.longitude = longitude;
   }
 
   public String toString()
@@ -59,15 +82,27 @@ public class AddressGPS implements Parcelable {
     return ToStringBuilder.reflectionToString(this);
   }
 
-  public AddressGPS withLatitude(Double paramDouble)
+  /**
+   * With latitude address gps.
+   *
+   * @param latitude the latitude
+   * @return the address gps
+   */
+  public AddressGPS withLatitude(Double latitude)
   {
-    this.latitude = paramDouble;
+    this.latitude = latitude;
     return this;
   }
 
-  public AddressGPS withLongitude(Double paramDouble)
+  /**
+   * With longitude address gps.
+   *
+   * @param longitude the param double
+   * @return the address gps
+   */
+  public AddressGPS withLongitude(Double longitude)
   {
-    this.longitude = paramDouble;
+    this.longitude = longitude;
     return this;
   }
 
@@ -82,14 +117,25 @@ public class AddressGPS implements Parcelable {
     dest.writeValue(this.longitude);
   }
 
+  /**
+   * Instantiates a new Address gps.
+   */
   public AddressGPS() {
   }
 
+  /**
+   * Instantiates a new Address gps.
+   *
+   * @param in the in
+   */
   protected AddressGPS(Parcel in) {
     this.latitude = (Double) in.readValue(Double.class.getClassLoader());
     this.longitude = (Double) in.readValue(Double.class.getClassLoader());
   }
 
+  /**
+   * The constant CREATOR.
+   */
   public static final Parcelable.Creator<AddressGPS> CREATOR = new Parcelable.Creator<AddressGPS>() {
     public AddressGPS createFromParcel(Parcel source) {
       return new AddressGPS(source);

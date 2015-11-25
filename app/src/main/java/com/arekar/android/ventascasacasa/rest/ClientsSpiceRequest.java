@@ -21,15 +21,25 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import roboguice.util.temp.Ln;
 
+/**
+ * The type Clients spice request.
+ * This is the class to perform requests to the Web Service, it handles everything related to Clients
+ */
 public class ClientsSpiceRequest extends JsonSpiceRequest<JsonArray>
 {
   private String baseUrl = "http://sales-yknx4.rhcloud.com/client";
   private String deleteUrl = "http://sales-yknx4.rhcloud.com/client/";
   private String updateUrl = "http://sales-yknx4.rhcloud.com/client/";
 
-  public ClientsSpiceRequest(@NonNull String paramString,@NonNull String token)
+  /**
+   * Instantiates a new Clients spice request.
+   *
+   * @param userId the user id
+   * @param token  the token
+   */
+  public ClientsSpiceRequest(@NonNull String userId,@NonNull String token)
   {
-    super(JsonArray.class, paramString, token);
+    super(JsonArray.class, userId, token);
     }
 
   public JsonArray loadDataFromNetwork()
@@ -56,8 +66,6 @@ public class ClientsSpiceRequest extends JsonSpiceRequest<JsonArray>
   }
 
 
-
-
   @Override
   public Boolean updateData(String element, String elementid) throws IOException {
     Ln.d("Call web service " + updateUrl);
@@ -69,10 +77,6 @@ public class ClientsSpiceRequest extends JsonSpiceRequest<JsonArray>
     return updateData(gUrl,element);
   }
 
-//  @Override
-//  public Boolean updateData(String field, String value, String data) {
-//    return null;
-//  }
   @Override
   public JsonElement insertData( String element) throws IOException
   {

@@ -49,12 +49,33 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.ExecutionException;
 
+/**
+ * The type Sync data service used for synchronizing data from the web service and data in the application.
+ */
 public class SyncDataService extends IntentService {
+    /**
+     * The constant MSG_TYPE_PAYMENT.
+     */
     public static final String MSG_TYPE_PAYMENT = "TYPE.PAYMENT";
+    /**
+     * The constant MSG_TYPE_CLIENT.
+     */
     public static final String MSG_TYPE_CLIENT = "TYPE.CLIENT";
+    /**
+     * The constant MSG_TYPE_PRODUCT.
+     */
     public static final String MSG_TYPE_PRODUCT = "TYPE.PRODUCT";
+    /**
+     * The constant MSG_PARAM_TYPE.
+     */
     public static final String MSG_PARAM_TYPE = "MSG_PARAM_TYPE";
+    /**
+     * The constant MSG_ADDED.
+     */
     public static final String MSG_ADDED = "MSG_ADDED";
+    /**
+     * The constant MSG_TYPE_SALE.
+     */
     public static final String MSG_TYPE_SALE = "MSG_TYPE_SALE";
     private static final String ACTION_FETCH_ALL = "com.arekar.android.ventascasacasa.service.action.FETCH_ALL";
     private static final String ACTION_FETCH_CLIENTS = "com.arekar.android.ventascasacasa.service.action.FETCH_CLIENTS";
@@ -89,14 +110,29 @@ public class SyncDataService extends IntentService {
         paths.put(JsonColumns.ROW_PAYMENTS_ID, Constants.Connections.PATH_PAYMENTS);
     }
 
+    /**
+     * The Local simple date format for parsing HTTP Headers Date.
+     */
     SimpleDateFormat localSimpleDateFormat = new SimpleDateFormat("EEE MMM dd yyyy HH:mm:ss Z");
-    ///Mon, 26 Oct 2015 05:44:46 GMT
+    /**
+     * The Local simple date format for parsing HTTP Headers Date.
+     */
+///Mon, 26 Oct 2015 05:44:46 GMT
     SimpleDateFormat localSimpleDateFormat2 = new SimpleDateFormat("EEE, dd MMM yyyy HH:mm:ss Z");
     private SharedPreferences sharedPreferences;
+
+    /**
+     * Instantiates a new Sync data service.
+     */
     public SyncDataService() {
         super("SyncDataService");
     }
 
+    /**
+     * Start the action of fetching all.
+     *
+     * @param paramContext the context of the intent
+     */
     public static void startActionFetchAll(Context paramContext) {
         Intent localIntent = new Intent(paramContext, SyncDataService.class);
         localIntent.setAction("com.arekar.android.ventascasacasa.service.action.FETCH_ALL");
@@ -104,6 +140,11 @@ public class SyncDataService extends IntentService {
         paramContext.startService(localIntent);
     }
 
+    /**
+     * Start the action of fetching clients.
+     *
+     * @param paramContext the context of the intent
+     */
     public static void startActionFetchClients(Context paramContext) {
         Log.d(LOG_TAG, "Fetching Clients");
         Intent localIntent = new Intent(paramContext, SyncDataService.class);
@@ -112,6 +153,11 @@ public class SyncDataService extends IntentService {
         paramContext.startService(localIntent);
     }
 
+    /**
+     * Start the action of fetching products.
+     *
+     * @param paramContext the context of the intent
+     */
     public static void startActionFetchProducts(Context paramContext) {
         Log.d(LOG_TAG, "Fetching Products");
         Intent localIntent = new Intent(paramContext, SyncDataService.class);
@@ -120,6 +166,11 @@ public class SyncDataService extends IntentService {
         paramContext.startService(localIntent);
     }
 
+    /**
+     * Start the action of fetching payments.
+     *
+     * @param paramContext the context of the intent
+     */
     public static void startActionFetchPayments(Context paramContext) {
         Log.d(LOG_TAG, "Fetching Payments");
         Intent localIntent = new Intent(paramContext, SyncDataService.class);
@@ -128,6 +179,11 @@ public class SyncDataService extends IntentService {
         paramContext.startService(localIntent);
     }
 
+    /**
+     * Start the action of fetching sales.
+     *
+     * @param paramContext the context of the intent
+     */
     public static void startActionFetchSales(Context paramContext) {
         Log.d(LOG_TAG, "Fetching Sales");
         Intent localIntent = new Intent(paramContext, SyncDataService.class);
@@ -136,6 +192,15 @@ public class SyncDataService extends IntentService {
         paramContext.startService(localIntent);
     }
 
+    /**
+     * Start action to do payments.
+     * This action will register a payment in the JSON Web Service.
+     *
+     * @param paramContext the context of the intent
+     * @param sale_id      the sale id
+     * @param amount       the amount
+     * @param msg          the message
+     */
     public static void startActionDoPayment(Context paramContext, String sale_id, Double amount, Messenger msg) {
         Log.d(LOG_TAG, "Doing Payment: " + amount);
         Intent localIntent = new Intent(paramContext, SyncDataService.class);
@@ -147,6 +212,12 @@ public class SyncDataService extends IntentService {
         paramContext.startService(localIntent);
     }
 
+    /**
+     * Start action delete client.
+     *
+     * @param context   the context
+     * @param client_id the client id
+     */
     public static void startActionDeleteClient(Context context, String client_id) {
         Log.d(LOG_TAG, "Deleting client " + client_id);
         Intent localIntent = new Intent(context, SyncDataService.class);
@@ -157,6 +228,12 @@ public class SyncDataService extends IntentService {
         context.startService(localIntent);
     }
 
+    /**
+     * Start action delete product.
+     *
+     * @param context   the context
+     * @param client_id the client id
+     */
     public static void startActionDeleteProduct(Context context, String client_id) {
         Log.d(LOG_TAG, "Deleting product " + client_id);
         Intent localIntent = new Intent(context, SyncDataService.class);
@@ -165,6 +242,13 @@ public class SyncDataService extends IntentService {
         context.startService(localIntent);
     }
 
+    /**
+     * Start action add client.
+     *
+     * @param context the context
+     * @param client  the client
+     * @param msg     the msg
+     */
     public static void startActionAddClient(Context context, Client client, Messenger msg) {
         Log.d(LOG_TAG, "Adding: " + client.getName());
         Intent localIntent = new Intent(context, SyncDataService.class);
@@ -174,6 +258,13 @@ public class SyncDataService extends IntentService {
         context.startService(localIntent);
     }
 
+    /**
+     * Start action add product.
+     *
+     * @param context the context
+     * @param product the product
+     * @param msg     the msg
+     */
     public static void startActionAddProduct(Context context, Product product, Messenger msg) {
         Log.d(LOG_TAG, "Adding: " + product.getName());
         Intent localIntent = new Intent(context, SyncDataService.class);
@@ -183,6 +274,13 @@ public class SyncDataService extends IntentService {
         context.startService(localIntent);
     }
 
+    /**
+     * Start action update client.
+     *
+     * @param context the context
+     * @param client  the client
+     * @param msg     the msg
+     */
     public static void startActionUpdateClient(Context context, Client client, Messenger msg) {
         Log.d(LOG_TAG, "Adding: " + client.getName());
         Intent localIntent = new Intent(context, SyncDataService.class);
@@ -193,6 +291,13 @@ public class SyncDataService extends IntentService {
         context.startService(localIntent);
     }
 
+    /**
+     * Start action update product.
+     *
+     * @param context the context
+     * @param product the product
+     * @param msg     the msg
+     */
     public static void startActionUpdateProduct(Context context, Product product, Messenger msg) {
         Log.d(LOG_TAG, "Adding: " + product.getName());
         Intent localIntent = new Intent(context, SyncDataService.class);
@@ -202,6 +307,13 @@ public class SyncDataService extends IntentService {
         context.startService(localIntent);
     }
 
+    /**
+     * Start action add sale.
+     *
+     * @param context   the context
+     * @param newSale   the new sale
+     * @param messenger the messenger
+     */
     public static void startActionAddSale(Context context, Sale newSale, Messenger messenger) {
         Log.d(LOG_TAG, "Adding sale ");
         Intent localIntent = new Intent(context, SyncDataService.class);
@@ -595,10 +707,20 @@ public class SyncDataService extends IntentService {
         sendMessage(m, messenger);
     }
 
+    /**
+     * Gets user id stored on the Application Preferences.
+     *
+     * @return the user id
+     */
     protected String getUserId() {
         return this.sharedPreferences.getString(Constants.Preferences.USER_ID, getString(R.string.static_user_id));
     }
 
+    /**
+     * Gets token stored on the Application Preferences.
+     *
+     * @return the token
+     */
     protected String getToken() {
         return this.sharedPreferences.getString(Constants.Preferences.TOKEN, getString(R.string.static_token));
     }
@@ -607,23 +729,45 @@ public class SyncDataService extends IntentService {
         private boolean updated;
         private Date when;
 
+        /**
+         * Instantiates a new Updated Object.
+         * This object represents whether a content has been updated and when it was updated.
+         *
+         * @param paramDate the param date
+         * @param arg3      the arg 3
+         */
         public Updated(boolean paramDate, Date arg3) {
             this.updated = paramDate;
             this.when = arg3;
         }
 
+        /**
+         * Instantiates a new Updated.
+         *
+         * @param param the param
+         */
         public Updated(boolean param) {
             this.updated = param;
 
             this.when = null;
         }
 
+        /**
+         * Gets when.
+         *
+         * @return the when
+         */
         public Date getWhen() {
             if (!this.updated)
                 return null;
             return this.when;
         }
 
+        /**
+         * Returns if the content is updated.
+         *
+         * @return the boolean
+         */
         public boolean isUpdated() {
             return this.updated;
         }

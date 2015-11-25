@@ -8,6 +8,10 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ * The type Payment.
+ * This type represents a payment in the webb service
+ */
 public class Payment extends AbstractItem
 {
 
@@ -35,16 +39,31 @@ public class Payment extends AbstractItem
     return new EqualsBuilder().append(this.saleId, paramObject1.saleId).append(this.price, paramObject1.price).append(this.date, paramObject1.date).isEquals();
   }
 
+  /**
+   * Gets date.
+   *
+   * @return the date
+   */
   public String getDate()
   {
     return this.date;
   }
 
+  /**
+   * Gets price.
+   *
+   * @return the price
+   */
   public Double getPrice()
   {
     return this.price;
   }
 
+  /**
+   * Gets sale id.
+   *
+   * @return the sale id
+   */
   public String getSaleId()
   {
     return this.saleId;
@@ -60,24 +79,39 @@ public class Payment extends AbstractItem
     return new HashCodeBuilder().append(this.saleId).append(this.price).append(this.date).toHashCode();
   }
 
-  public void setDate(String paramString)
+  /**
+   * Sets date.
+   *
+   * @param date the date
+   */
+  public void setDate(String date)
   {
-    this.date = paramString;
+    this.date = date;
   }
 
-  public void setPrice(Double paramDouble)
+  /**
+   * Sets price.
+   *
+   * @param price the price
+   */
+  public void setPrice(Double price)
   {
-    this.price = paramDouble;
+    this.price = price;
   }
 
-  public void setSaleId(String paramString)
+  /**
+   * Sets sale id.
+   *
+   * @param saleId the sale id
+   */
+  public void setSaleId(String saleId)
   {
-    this.saleId = paramString;
+    this.saleId = saleId;
   }
 
-  public void setUserId(String paramString)
+  public void setUserId(String userId)
   {
-    this.userId = paramString;
+    this.userId = userId;
   }
 
   public String toString()
@@ -85,18 +119,36 @@ public class Payment extends AbstractItem
     return ToStringBuilder.reflectionToString(this);
   }
 
+  /**
+   * With date payment.
+   *
+   * @param paramString the param string
+   * @return the payment
+   */
   public Payment withDate(String paramString)
   {
     this.date = paramString;
     return this;
   }
 
+  /**
+   * With price payment.
+   *
+   * @param paramDouble the param double
+   * @return the payment
+   */
   public Payment withPrice(Double paramDouble)
   {
     this.price = paramDouble;
     return this;
   }
 
+  /**
+   * With sale id payment.
+   *
+   * @param paramString the param string
+   * @return the payment
+   */
   public Payment withSaleId(String paramString)
   {
     this.saleId = paramString;
@@ -117,9 +169,17 @@ public class Payment extends AbstractItem
     dest.writeString(getId());
   }
 
+  /**
+   * Instantiates a new Payment.
+   */
   public Payment() {
   }
 
+  /**
+   * Instantiates a new Payment.
+   *
+   * @param in the in
+   */
   protected Payment(Parcel in) {
     this.date = in.readString();
     this.price = (Double) in.readValue(Double.class.getClassLoader());
@@ -128,6 +188,9 @@ public class Payment extends AbstractItem
     setId(in.readString());
   }
 
+  /**
+   * The constant CREATOR.
+   */
   public static final Creator<Payment> CREATOR = new Creator<Payment>() {
     public Payment createFromParcel(Parcel source) {
       return new Payment(source);

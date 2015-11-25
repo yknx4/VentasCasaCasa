@@ -23,9 +23,13 @@ import roboguice.util.temp.Ln;
 
 /**
  * Created by yknx4 on 23/10/2015.
+ * This class is used to perform all the requests related to Sales in the web service.
  */
 public class SalesSpiceRequest extends JsonSpiceRequest<JsonArray> {
 
+    /**
+     * The Base url for performing request
+     */
     String baseUrl = Constants.Connections.API_URL+Constants.Connections.PATH_SALES;
 
     @Override
@@ -44,6 +48,12 @@ public class SalesSpiceRequest extends JsonSpiceRequest<JsonArray> {
     }
 
 
+    /**
+     * Instantiates a new Sales spice request.
+     *
+     * @param token  the token
+     * @param userid the userid
+     */
     public SalesSpiceRequest(@NonNull String token, @NonNull String userid)
     {
         super(JsonArray.class,token,userid);

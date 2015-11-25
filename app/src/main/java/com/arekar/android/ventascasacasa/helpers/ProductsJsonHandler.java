@@ -13,13 +13,26 @@ import java.util.List;
 
 /**
  * Created by yknx4 on 26/10/2015.
+ * Json Handler for Products
  */
 public class ProductsJsonHandler extends AbstractJsonHandler<Product> {
+    /**
+     * Instantiates a new Products json handler.
+     *
+     * @param item the Json Array item from which Products will be loaded.
+     */
     public ProductsJsonHandler(JsonArray item) {
         super(item);
         Type listType = new TypeToken<List<Product>>(){}.getType();
         itemsList = new Gson().fromJson(item,listType);
     }
+
+    /**
+     * Get products given positions in the arrai.
+     *
+     * @param positions the positions
+     * @return the list
+     */
     public List<Product> getProductFromPosition(Integer[] positions){
         List<Product> res = new ArrayList<>();
         for(Integer pos:positions){
@@ -27,6 +40,13 @@ public class ProductsJsonHandler extends AbstractJsonHandler<Product> {
         }
         return res;
     }
+
+    /**
+     * Get products id from positions in the array.
+     *
+     * @param positions the positions
+     * @return the list containing the ID's
+     */
     public List<String> getProductsIdFromPosition(Integer[] positions){
         List<String> res = new ArrayList<>();
         for(Integer pos:positions){
@@ -34,6 +54,13 @@ public class ProductsJsonHandler extends AbstractJsonHandler<Product> {
         }
         return res;
     }
+
+    /**
+     * Get products string from positions in the array
+     *
+     * @param positions the positions
+     * @return the string
+     */
     public String getProductsStringFromPosition(Integer[] positions){
         StringBuilder sb = new StringBuilder();
         sb.append("");
@@ -43,6 +70,13 @@ public class ProductsJsonHandler extends AbstractJsonHandler<Product> {
         return sb.toString();
 
     }
+
+    /**
+     * Get products accumulated price from positions.
+     *
+     * @param positions the positions
+     * @return the amount
+     */
     public double getProductsPriceFromPosition(Integer[] positions){
         double total = 0;
         for(Integer pos:positions){
@@ -52,6 +86,11 @@ public class ProductsJsonHandler extends AbstractJsonHandler<Product> {
 
     }
 
+    /**
+     * Get products title string [ ].
+     *
+     * @return the string [ ]
+     */
     public String[] getProductsTitle(){
         List<String> titles = new ArrayList<>();
         for(Product item:itemsList){

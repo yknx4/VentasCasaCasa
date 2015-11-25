@@ -17,10 +17,19 @@ import java.io.InputStream;
 import java.text.NumberFormat;
 import java.util.Locale;
 
+/**
+ * The type Methods.
+ */
 public abstract class Methods
 {
   private static final String filter = "[^0-9]";
 
+  /**
+   * Get bytes fron an Input Stream.
+   *
+   * @param is the input stream
+   * @return the bytes
+   */
   public static byte[] getBytes(InputStream is)  {
 
     try {
@@ -64,6 +73,14 @@ public abstract class Methods
     return haveConnectedWifi || haveConnectedMobile;
   }
 
+  /**
+   * Launch google maps.
+   *
+   * @param paramContext the context
+   * @param paramDouble1 the latitute
+   * @param paramDouble2 the the longitude
+   * @param paramString  the tag of the location
+   */
   public static void launchGoogleMaps(Context paramContext, double paramDouble1, double paramDouble2, String paramString)
   {
     Intent in = new Intent("android.intent.action.VIEW", Uri.parse("geo:0,0?q=" + Double.toString(paramDouble1) + "," + Double.toString(paramDouble2) + "(" + paramString + ")"));
@@ -71,6 +88,12 @@ public abstract class Methods
     paramContext.startActivity(in);
   }
 
+  /**
+   * Make call.
+   *
+   * @param paramContext the context
+   * @param paramString  the number
+   */
   public static void makeCall(Context paramContext, String paramString)
   {
     paramString = paramString.replaceAll("[^0-9]", "");
@@ -82,7 +105,18 @@ public abstract class Methods
     }
     paramContext.startActivity(in);
   }
+
+  /**
+   * The Currency formatter.
+   */
   static NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault());
+
+  /**
+   * Send mail.
+   *
+   * @param paramContext the context
+   * @param paramString  the email address
+   */
   public static void sendMail(Context paramContext, String paramString)
   {
     Intent localIntent = new Intent("android.intent.action.SEND");
@@ -91,6 +125,12 @@ public abstract class Methods
     paramContext.startActivity(Intent.createChooser(localIntent, "Choose an Email client"));
   }
 
+  /**
+   * Get money string.
+   *
+   * @param moni the money
+   * @return the money string
+   */
   public static String getMoneyString(Double moni){
     return currencyFormatter.format(moni);
   }

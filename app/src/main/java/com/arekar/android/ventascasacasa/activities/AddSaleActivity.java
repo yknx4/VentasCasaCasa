@@ -24,7 +24,10 @@ import com.arekar.android.ventascasacasa.service.SyncDataService;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 
+import org.apache.commons.lang3.ArrayUtils;
+
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
 
@@ -38,6 +41,8 @@ public class AddSaleActivity extends BaseActivity implements View.OnClickListene
     private TextInputLayout inputLayoutTime;
     private TextInputLayout inputLayoutWhen;
     private Button btn_add;
+    private Button btn_days;
+    private Button btn_time;
     private Button btn_signup;
     IncomingHandler handler = new IncomingHandler(this);
     ProductsJsonHandler productsJsonHandler;
@@ -58,6 +63,10 @@ public class AddSaleActivity extends BaseActivity implements View.OnClickListene
         inputLayoutTime = (TextInputLayout) findViewById(R.id.input_layout_time);
         inputLayoutWhen = (TextInputLayout) findViewById(R.id.input_layout_when);
         btn_signup = (Button) findViewById(R.id.btn_signup);
+        btn_days = (Button) findViewById(R.id.btn_days);
+        btn_days.setOnClickListener(this);
+        btn_time = (Button) findViewById(R.id.btn_time);
+        btn_time.setOnClickListener(this);
         btn_signup.setOnClickListener(this);
         JsonSelection getProd = new JsonSelection();
         getProd.id(JsonColumns.ROW_PRODUCTS_ID);
@@ -140,6 +149,54 @@ public class AddSaleActivity extends BaseActivity implements View.OnClickListene
                 .show();
     }
 
+    Integer[] selectedDays=null;
+
+    private void daysChooser(){
+        new MaterialDialog.Builder(this)
+                .title("Pick days")
+                .items(R.array.days)
+                .itemsCallbackMultiChoice(selectedDays, new MaterialDialog.ListCallbackMultiChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+                        /**
+                         * If you use alwaysCallMultiChoiceCallback(), which is discussed below,
+                         * returning false here won't allow the newly selected check box to actually be selected.
+                         * See the limited multi choice dialog example in the sample project for details.
+                         **/
+                        selectedDays = which;
+                        Snackbar.make(coordinationLayout, "Selected days", Snackbar.LENGTH_SHORT).show();
+//                        getInputDays().setText(productsJsonHandler.getProductsStringFromPosition(which));
+                        return true;
+                    }
+                })
+                .positiveText("ok")
+                .show();
+    }
+
+    Integer[] selectedTimes=null;
+
+    private void timeChooser(){
+        new MaterialDialog.Builder(this)
+                .title("Pick hours")
+                .items(R.array.days)
+                .itemsCallbackMultiChoice(selectedTimes, new MaterialDialog.ListCallbackMultiChoice() {
+                    @Override
+                    public boolean onSelection(MaterialDialog dialog, Integer[] which, CharSequence[] text) {
+                        /**
+                         * If you use alwaysCallMultiChoiceCallback(), which is discussed below,
+                         * returning false here won't allow the newly selected check box to actually be selected.
+                         * See the limited multi choice dialog example in the sample project for details.
+                         **/
+                        selectedTimes = which;
+                        Snackbar.make(coordinationLayout, "Selected hours", Snackbar.LENGTH_SHORT).show();
+//                        getInputTime().setText(productsJsonHandler.getProductsStringFromPosition(which));
+                        return true;
+                    }
+                })
+                .positiveText("ok")
+                .show();
+    }
+
     private EditText getInputProducts(){
         return (EditText) findViewById(R.id.input_products);
     }
@@ -168,6 +225,12 @@ public class AddSaleActivity extends BaseActivity implements View.OnClickListene
             case R.id.btn_signup:
                 doSale();
                 break;
+            case R.id.btn_time:
+                timeChooser();
+                break;
+            case R.id.btn_days:
+                daysChooser();
+                break;
         }
     }
 
@@ -180,23 +243,21 @@ public class AddSaleActivity extends BaseActivity implements View.OnClickListene
         return result;
     }
 
+
+
+
     private void doSale() {
         Sale newSale = new Sale();
         newSale.setMultiplePayments(true);
         newSale.setDate(String.valueOf(new Date().getTime()));
         newSale.setUserId(getUserId());
         newSale.setPrice(Double.valueOf(getInputPrice().getText().toString()));
-        newSale.setAvailableDays(getIntegerFromString(getInputDays().getText().toString()));
-        newSale.setAvailableTime(getIntegerFromString(getInputTime().getText().toString()));
+        newSale.setAvailableDays(Arrays.asList(selectedDays));
+        newSale.setAvailableTime(Arrays.asList(selectedTimes));
         newSale.setProducts(productsJsonHandler.getProductsIdFromPosition(selectedProducts));
         newSale.setPaymentDue(Integer.valueOf(getInputWhen().getText().toString()));
         newSale.setClientId(clientId);
         newSale.setPaymentCost(newSale.getPrice()/8);
-//        if(update){
-//            SyncDataService.startActionUpdateProduct(this, newProduct, getMessenger());
-//        }
-//        else {
-            SyncDataService.startActionAddSale(this, newSale, getMessenger());
-//        }
+        SyncDataService.startActionAddSale(this, newSale, getMessenger());
     }
 }

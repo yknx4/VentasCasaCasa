@@ -10,12 +10,22 @@ import java.io.IOException;
 
 import roboguice.util.temp.Ln;
 
+/**
+ * The type Products spice request.
+ * This class is used to perform all the requests related to Products in the Web Service.
+ */
 public class ProductsSpiceRequest extends JsonSpiceRequest<JsonArray>
 {
   private String baseUrl = "http://sales-yknx4.rhcloud.com/product";
   private String updateUrl="http://sales-yknx4.rhcloud.com/product/";
   private String deleteUrl="http://sales-yknx4.rhcloud.com/product/";
 
+  /**
+   * Instantiates a new Products spice request.
+   *
+   * @param token  the token
+   * @param userid the userid
+   */
   public ProductsSpiceRequest(@NonNull String token,@NonNull String userid)
   {
     super(JsonArray.class, token, userid);

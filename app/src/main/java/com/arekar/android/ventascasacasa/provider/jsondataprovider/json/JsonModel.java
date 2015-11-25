@@ -31,36 +31,17 @@ import java.util.Date;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 
-/**
- * A human being which is part of a team.
- */
 public interface JsonModel extends BaseModel {
 
-    /**
-     * JSON Raw data
-     * Cannot be {@code null}.
-     */
     @NonNull
     String getData();
 
-    /**
-     * Last Modified
-     * Cannot be {@code null}.
-     */
     @NonNull
     Date getLastModified();
 
-    /**
-     * User id
-     * Cannot be {@code null}.
-     */
     @NonNull
     String getUserId();
 
-    /**
-     * MD5 hash of data
-     * Cannot be {@code null}.
-     */
     @NonNull
     String getMd5();
 }

@@ -14,11 +14,6 @@ import java.lang.ref.WeakReference;
 
 
 
-/**
- * Created by AKiniyalocts on 1/15/15.
- * <p/>
- * This class is just created to help with notifications, definitely not necessary.
- */
 public class NotificationHelper {
     public final static String TAG = NotificationHelper.class.getSimpleName();
 

@@ -25,22 +25,50 @@ import java.util.Locale;
  * Created by yknx4 on 23/10/2015.
  */
 public class SaleController {
+    /**
+     * The Item.
+     */
     Sale item;
+    /**
+     * The Payments.
+     */
     PaymentsJsonHandler payments = null;
     private SaleController(Sale item){
         this.item = item;
     }
+
+    /**
+     * Method to generate a SaleController related to an specific Sale
+     *
+     * @param item the item
+     * @return the sale controller
+     */
     public static SaleController with(Sale item){
 
         return new SaleController(item);
     }
 
+    /**
+     * Method to include payments context to the class.
+     *
+     * @param p the p
+     * @return the sale controller
+     */
     public SaleController payments(PaymentsJsonHandler p){
         payments = p;
         return this;
     }
 
+    /**
+     * The Currency formatter.
+     */
     NumberFormat currencyFormatter = NumberFormat.getCurrencyInstance(Locale.getDefault());
+
+    /**
+     * Get total cost string.
+     *
+     * @return the string
+     */
     public String getTotalCostString(){
         double amount =item.getPrice();
 
@@ -48,6 +76,12 @@ public class SaleController {
     }
 
     private static final String TAG = "SaleController";
+
+    /**
+     * Get debt of this sale
+     *
+     * @return the remaining cost to pay. (Returns full cost if no payments are associated)
+     */
     public Double getRemaining(){
         if(payments==null){
             Log.w(TAG,"No payments loaded, returning full cost.");
@@ -57,6 +91,11 @@ public class SaleController {
     }
 
 
+    /**
+     * Get remaining debt as string.
+     *
+     * @return the string
+     */
     public String getRemainingString(){
 
         return currencyFormatter.format(getRemaining());
@@ -72,6 +111,11 @@ public class SaleController {
     }
 
 
+    /**
+     * Get next payment date.
+     *
+     * @return the date
+     */
     public Date getNextPayment(){
         Date firstDay = new Date(Long.parseLong(item.getDate()));
         Date currentDate = new Date();
@@ -86,6 +130,12 @@ public class SaleController {
         return cal.getTime();
     }
 
+    /**
+     * Get next payment string .
+     *
+     * @param con the context
+     * @return the string
+     */
     public String getNextPaymentString(Context con){
         Date nextPayment = getNextPayment();
         Calendar cal = Calendar.getInstance();

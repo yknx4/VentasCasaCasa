@@ -10,6 +10,10 @@ import org.apache.commons.lang3.builder.EqualsBuilder;
 import org.apache.commons.lang3.builder.HashCodeBuilder;
 import org.apache.commons.lang3.builder.ToStringBuilder;
 
+/**
+ * The type Sale.
+ * This represents a sale in the Web Service
+ */
 public class Sale extends AbstractItem {
 
   @Expose
@@ -64,53 +68,106 @@ public class Sale extends AbstractItem {
     return new EqualsBuilder().append(this.Id, paramObjec.Id).append(this.date, paramObjec.date).append(this.clientId, paramObjec.clientId).append(this.products, paramObjec.products).append(this.price, paramObjec.price).append(this.paid, paramObjec.paid).append(this.multiplePayments, paramObjec.multiplePayments).append(this.paymentCost, paramObjec.paymentCost).append(this.availableDays, paramObjec.availableDays).append(this.availableTime, paramObjec.availableTime).append(this.paymentDue, paramObjec.paymentDue).isEquals();
   }
 
+  /**
+   * Gets available days of the week.
+   * These are represented as the number of the day starting on Sunday.
+   * Ex. Sunday = 0, Monday = 1....
+   *
+   * @return the available days
+   */
   public List<Integer> getAvailableDays()
   {
     return this.availableDays;
   }
 
+  /**
+   * Gets available time.
+   * These are stored as 24hr format
+   * Ex. 14 = 2:00pm
+   *
+   * @return the available time
+   */
   public List<Integer> getAvailableTime()
   {
     return this.availableTime;
   }
 
+  /**
+   * Gets client id.
+   *
+   * @return the client id
+   */
   public String getClientId()
   {
     return this.clientId;
   }
 
+  /**
+   * Gets date.
+   *
+   * @return the date
+   */
   public String getDate()
   {
     return this.date;
   }
 
 
-
+  /**
+   * Gets multiple payments.
+   *
+   * @return the multiple payments
+   */
   public Boolean getMultiplePayments()
   {
     return this.multiplePayments;
   }
 
+  /**
+   * Gets paid.
+   *
+   * @return the paid
+   */
   public Boolean getPaid()
   {
     return this.paid;
   }
 
+  /**
+   * Gets payment cost.
+   *
+   * @return the payment cost
+   */
   public Double getPaymentCost()
   {
     return this.paymentCost;
   }
 
+  /**
+   * Gets payment due.
+   *
+   * @return the payment due
+   */
   public Integer getPaymentDue()
   {
     return this.paymentDue;
   }
 
+  /**
+   * Gets price.
+   *
+   * @return the price
+   */
   public Double getPrice()
   {
     return this.price;
   }
 
+  /**
+   * Gets products.
+   *
+   * @return the products
+   */
   public List<String> getProducts()
   {
     return this.products;
@@ -121,56 +178,117 @@ public class Sale extends AbstractItem {
     return new HashCodeBuilder().append(this.Id).append(this.date).append(this.clientId).append(this.products).append(this.price).append(this.paid).append(this.multiplePayments).append(this.paymentCost).append(this.availableDays).append(this.availableTime).append(this.paymentDue).toHashCode();
   }
 
-  public void setAvailableDays(List<Integer> paramList)
+  /**
+   * Sets available days.
+   *
+   * @param availableDays the available days
+   */
+  public void setAvailableDays(List<Integer> availableDays)
   {
-    this.availableDays = paramList;
+    this.availableDays = availableDays;
   }
 
-  public void setAvailableTime(List<Integer> paramList)
+  /**
+   * Sets available time.
+   *
+   * @param availableTime the available time
+   */
+  public void setAvailableTime(List<Integer> availableTime)
   {
-    this.availableTime = paramList;
-  }
-
-  public void setClientId(String paramString)
-  {
-    this.clientId = paramString;
-  }
-
-  public void setDate(String paramString)
-  {
-    this.date = paramString;
+    this.availableTime = availableTime;
   }
 
 
 
-  public void setMultiplePayments(Boolean paramBoolean)
-  {
-    this.multiplePayments = paramBoolean;
+  private static String[] IntArrayToString(Integer[] ints){
+    int l = ints.length;
+    String[] str = new String[l];
+    for(int i = 0;i<l;i++)
+    {
+      str[i] = ints[i].toString();
+    }
+    return str;
   }
 
-  public void setPaid(Boolean paramBoolean)
+  /**
+   * Sets client id.
+   *
+   * @param clientId the client id
+   */
+  public void setClientId(String clientId)
   {
-    this.paid = paramBoolean;
+    this.clientId = clientId;
   }
 
-  public void setPaymentCost(Double paramDouble)
+  /**
+   * Sets date.
+   *
+   * @param date the date
+   */
+  public void setDate(String date)
   {
-    this.paymentCost = paramDouble;
+    this.date = date;
   }
 
-  public void setPaymentDue(Integer paramInteger)
+
+  /**
+   * Sets multiple payments.
+   *
+   * @param multiplePayments the multiple payments
+   */
+  public void setMultiplePayments(Boolean multiplePayments)
   {
-    this.paymentDue = paramInteger;
+    this.multiplePayments = multiplePayments;
   }
 
-  public void setPrice(Double paramDouble)
+  /**
+   * Sets paid.
+   *
+   * @param paid the paid
+   */
+  public void setPaid(Boolean paid)
   {
-    this.price = paramDouble;
+    this.paid = paid;
   }
 
-  public void setProducts(List<String> paramList)
+  /**
+   * Sets payment cost.
+   *
+   * @param paymentCost the payment cost
+   */
+  public void setPaymentCost(Double paymentCost)
   {
-    this.products = paramList;
+    this.paymentCost = paymentCost;
+  }
+
+  /**
+   * Sets payment due.
+   *
+   * @param paymentDue the payment due
+   */
+  public void setPaymentDue(Integer paymentDue)
+  {
+    this.paymentDue = paymentDue;
+  }
+
+  /**
+   * Sets price.
+   *
+   * @param price the price
+   */
+  public void setPrice(Double price)
+  {
+    this.price = price;
+  }
+
+  /**
+   * Sets products.
+   *
+   * @param products the products
+   */
+  public void setProducts(List<String> products)
+  {
+    this.products = products;
   }
 
   public String toString()
@@ -178,69 +296,135 @@ public class Sale extends AbstractItem {
     return ToStringBuilder.reflectionToString(this);
   }
 
-  public Sale withAvailableDays(List<Integer> paramList)
+  /**
+   * With available days sale.
+   *
+   * @param availableDays the available days
+   * @return the sale
+   */
+  public Sale withAvailableDays(List<Integer> availableDays)
   {
-    this.availableDays = paramList;
+    this.availableDays = availableDays;
     return this;
   }
 
-  public Sale withAvailableTime(List<Integer> paramList)
+  /**
+   * With available time sale.
+   *
+   * @param availableTimes the available times
+   * @return the sale
+   */
+  public Sale withAvailableTime(List<Integer> availableTimes)
   {
-    this.availableTime = paramList;
+    this.availableTime = availableTimes;
     return this;
   }
 
-  public Sale withClientId(String paramString)
+  /**
+   * With client id sale.
+   *
+   * @param clientId the client id
+   * @return the sale
+   */
+  public Sale withClientId(String clientId)
   {
-    this.clientId = paramString;
+    this.clientId = clientId;
     return this;
   }
 
-  public Sale withDate(String paramString)
+  /**
+   * With date sale.
+   *
+   * @param date the date
+   * @return the sale
+   */
+  public Sale withDate(String date)
   {
-    this.date = paramString;
+    this.date = date;
     return this;
   }
 
-  public Sale withId(String paramString)
+  /**
+   * With id sale.
+   *
+   * @param id the id
+   * @return the sale
+   */
+  public Sale withId(String id)
   {
-    this.Id = paramString;
+    this.Id = id;
     return this;
   }
 
-  public Sale withMultiplePayments(Boolean paramBoolean)
+  /**
+   * With multiple payments sale.
+   *
+   * @param hasMultiplePayments the has multiple payments
+   * @return the sale
+   */
+  public Sale withMultiplePayments(Boolean hasMultiplePayments)
   {
-    this.multiplePayments = paramBoolean;
+    this.multiplePayments = hasMultiplePayments;
     return this;
   }
 
-  public Sale withPaid(Boolean paramBoolean)
+  /**
+   * With paid sale.
+   *
+   * @param isAlreadyPaid the is already paid
+   * @return the sale
+   */
+  public Sale withPaid(Boolean isAlreadyPaid)
   {
-    this.paid = paramBoolean;
+    this.paid = isAlreadyPaid;
     return this;
   }
 
-  public Sale withPaymentCost(Double paramDouble)
+  /**
+   * With payment cost sale.
+   *
+   * @param PaymentFee the payment fee
+   * @return the sale
+   */
+  public Sale withPaymentCost(Double PaymentFee)
   {
-    this.paymentCost = paramDouble;
+    this.paymentCost = PaymentFee;
     return this;
   }
 
-  public Sale withPaymentDue(Integer paramInteger)
+  /**
+   * With payment due sale.
+   *
+   * @param PaymentDue the payment due
+   * @return the sale
+   */
+  public Sale withPaymentDue(Integer PaymentDue)
   {
-    this.paymentDue = paramInteger;
+    this.paymentDue = PaymentDue;
     return this;
   }
 
-  public Sale withPrice(Double paramDouble)
+  /**
+   * With price sale.
+   *
+   * @param price the price
+   * @return the sale
+   */
+  public Sale withPrice(Double price)
   {
-    this.price = paramDouble;
+    this.price = price;
     return this;
   }
 
-  public Sale withProducts(List<String> paramList)
+  /**
+   * With products sale.
+   *
+   * @param productsList the products list
+   * @return the sale
+   */
+  public Sale withProducts(List<String> productsList)
   {
-    this.products = paramList;
+    this.products = productsList;
     return this;
   }
 
@@ -265,9 +449,17 @@ public class Sale extends AbstractItem {
     dest.writeString(getUserId());
   }
 
+  /**
+   * Instantiates a new Sale.
+   */
   public Sale() {
   }
 
+  /**
+   * Instantiates a new Sale.
+   *
+   * @param in the in
+   */
   protected Sale(Parcel in) {
     this.availableDays = new ArrayList<Integer>();
     in.readList(this.availableDays, List.class.getClassLoader());
@@ -285,6 +477,9 @@ public class Sale extends AbstractItem {
     setUserId(in.readString());
   }
 
+  /**
+   * The constant CREATOR.
+   */
   public static final Creator<Sale> CREATOR = new Creator<Sale>() {
     public Sale createFromParcel(Parcel source) {
       return new Sale(source);

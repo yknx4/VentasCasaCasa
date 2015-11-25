@@ -8,9 +8,6 @@ import android.support.v4.app.Fragment;
 import com.arekar.android.ventascasacasa.Constants;
 import com.arekar.android.ventascasacasa.R;
 
-/**
- * Created by yknx4 on 25/10/2015.
- */
 public class BaseFragment extends Fragment {
     private String getUserId()
     {

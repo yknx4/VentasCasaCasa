@@ -8,11 +8,6 @@ import java.io.IOException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
-/**
- * Created by AKiniyalocts on 1/15/15.
- *
- * Basic network utils
- */
 public class NetworkUtils {
   public static final String TAG = NetworkUtils.class.getSimpleName();
 

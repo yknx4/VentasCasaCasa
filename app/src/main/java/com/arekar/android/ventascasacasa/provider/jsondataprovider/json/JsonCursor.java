@@ -32,17 +32,11 @@ import android.support.annotation.Nullable;
 
 import com.arekar.android.ventascasacasa.provider.jsondataprovider.base.AbstractCursor;
 
-/**
- * Cursor wrapper for the {@code json} table.
- */
 public class JsonCursor extends AbstractCursor implements JsonModel {
     public JsonCursor(Cursor cursor) {
         super(cursor);
     }
 
-    /**
-     * Primary key.
-     */
     public long getId() {
         Long res = getLongOrNull(JsonColumns._ID);
         if (res == null)
@@ -50,10 +44,6 @@ public class JsonCursor extends AbstractCursor implements JsonModel {
         return res;
     }
 
-    /**
-     * JSON Raw data
-     * Cannot be {@code null}.
-     */
     @NonNull
     public String getData() {
         String res = getStringOrNull(JsonColumns.DATA);
@@ -62,10 +52,6 @@ public class JsonCursor extends AbstractCursor implements JsonModel {
         return res;
     }
 
-    /**
-     * Last Modified
-     * Cannot be {@code null}.
-     */
     @NonNull
     public Date getLastModified() {
         Date res = getDateOrNull(JsonColumns.LAST_MODIFIED);
@@ -74,10 +60,6 @@ public class JsonCursor extends AbstractCursor implements JsonModel {
         return res;
     }
 
-    /**
-     * User id
-     * Cannot be {@code null}.
-     */
     @NonNull
     public String getUserId() {
         String res = getStringOrNull(JsonColumns.USER_ID);
@@ -86,10 +68,6 @@ public class JsonCursor extends AbstractCursor implements JsonModel {
         return res;
     }
 
-    /**
-     * MD5 hash of data
-     * Cannot be {@code null}.
-     */
     @NonNull
     public String getMd5() {
         String res = getStringOrNull(JsonColumns.MD5);
