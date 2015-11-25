@@ -26,14 +26,29 @@ import roboguice.util.temp.Ln;
 
 /**
  * Created by yknx4 on 24/10/2015.
+ * This is used to perform all the requests related to Payments in the Web Service.
  */
 public class PaymentsSpiceRequest extends  JsonSpiceRequest<JsonArray> {
     private String clientid;
 
+    /**
+     * Instantiates a new Payments spice request.
+     *
+     * @param token    the token
+     * @param userid   the userid
+     * @param clientid the clientid
+     */
     public PaymentsSpiceRequest(@NonNull String token, @NonNull String userid, @NonNull String clientid) {
         super(JsonArray.class,token,userid);
         this.clientid = clientid;
     }
+
+    /**
+     * Instantiates a new Payments spice request.
+     *
+     * @param token  the token
+     * @param userid the userid
+     */
     public PaymentsSpiceRequest(@NonNull String token,@NonNull String userid){
         super(JsonArray.class, token, userid);
 
@@ -44,6 +59,9 @@ public class PaymentsSpiceRequest extends  JsonSpiceRequest<JsonArray> {
 
     }
 
+    /**
+     * The Base url for performing API requests
+     */
     final String baseUrl = Constants.Connections.API_URL+Constants.Connections.PATH_PAYMENTS;
     @Override
     public JsonArray loadDataFromNetwork() throws IOException

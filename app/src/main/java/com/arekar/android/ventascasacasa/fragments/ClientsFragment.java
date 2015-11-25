@@ -141,11 +141,6 @@ public class ClientsFragment extends BaseFragment
 
   private static final String BUNDLE_RECYCLER_LAYOUT = "classname.recycler.layout";
 
-  /**
-   * This is a method for Fragment.
-   * You can do the same in onCreate or onRestoreInstanceState
-   */
-
   int restoredPos= -1;
   @Override
   public void onViewStateRestored(@Nullable Bundle savedInstanceState) {

@@ -16,9 +16,6 @@ import com.arekar.android.ventascasacasa.R;
 
 import java.lang.ref.WeakReference;
 
-/**
- * Created by yknx4 on 25/10/2015.
- */
 public abstract class BaseActivity extends AppCompatActivity {
 
     protected static String INVALID_TOKEN = "INVALID_TOKEN";

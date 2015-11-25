@@ -27,9 +27,6 @@ import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
 import java.util.List;
 
-/**
- * Created by yknx4 on 23/10/2015.
- */
 public class SalesRvAdapter extends RecyclerView.Adapter<SalesRvAdapter.SaleViewHolder> {
 
     private static final int TYPE_PAID = 343;

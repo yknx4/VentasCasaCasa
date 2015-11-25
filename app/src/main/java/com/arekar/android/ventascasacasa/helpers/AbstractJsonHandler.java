@@ -13,17 +13,41 @@ import java.util.List;
 
 /**
  * Created by yknx4 on 23/10/2015.
+ *
+ * Class for handling Json Array data as POJO
+ *
+ * @param <T> the type parameter
  */
 public class AbstractJsonHandler<T extends AbstractItem> {
+    /**
+     * The Items.
+     */
     protected JsonArray items;
+    /**
+     * The Items list.
+     */
     protected List<T> itemsList;
+    /**
+     * The Log Tag.
+     */
     protected String TAG = "AbstractJsonHandler";
 
+    /**
+     * Instantiates a new Abstract json handler.
+     *
+     * @param item the JsonArray item to be handled
+     */
     public AbstractJsonHandler(JsonArray item) {
         this.items = item;
     }
 
 
+    /**
+     * Get an element from JsonArray by ID
+     *
+     * @param id the id
+     * @return the element
+     */
     public T getById(@NonNull String id){
         if(id.isEmpty()){
             Log.d(TAG, "getById()\n Input id is empty, are you sure it wasn't a mistake?");

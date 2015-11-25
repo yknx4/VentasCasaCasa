@@ -24,12 +24,21 @@ import roboguice.util.temp.Ln;
 
 /**
  * Created by yknx4 on 25/10/2015.
+ * This request is used to perform requests to the Google Geocoding API to get Longitude and Latitude Address, given a normal Postal Address.
  */
 public class GoogleGeocodingSpiceRequest extends JsonSpiceRequest<JsonObject> {
 
+    /**
+     * The Google Geocoding Api URL.
+     */
     String baseurl = "https://maps.googleapis.com/maps/api/geocode/json";
     private String address;
 
+    /**
+     * Instantiates a new Google geocoding spice request.
+     *
+     * @param address the home address
+     */
     public GoogleGeocodingSpiceRequest(@NonNull String address)
     {
         super(JsonObject.class);
@@ -64,6 +73,11 @@ public class GoogleGeocodingSpiceRequest extends JsonSpiceRequest<JsonObject> {
     }
 
 
+    /**
+     * Load location from network.
+     *
+     * @return the address gps
+     */
     public AddressGPS loadLocationFromNetwork() {
         AddressGPS add = new AddressGPS();
         add.setLatitude(0.0);

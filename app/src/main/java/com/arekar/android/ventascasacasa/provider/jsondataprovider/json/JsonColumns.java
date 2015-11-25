@@ -30,9 +30,6 @@ import android.provider.BaseColumns;
 import com.arekar.android.ventascasacasa.provider.jsondataprovider.JsonDataProvider;
 import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonColumns;
 
-/**
- * A human being which is part of a team.
- */
 public class JsonColumns implements BaseColumns {
 
     public static final long ROW_CLIENTS_ID = 1;
@@ -43,29 +40,14 @@ public class JsonColumns implements BaseColumns {
     public static final String TABLE_NAME = "json";
     public static final Uri CONTENT_URI = Uri.parse(JsonDataProvider.CONTENT_URI_BASE + "/" + TABLE_NAME);
 
-    /**
-     * Primary key.
-     */
     public static final String _ID = BaseColumns._ID;
 
-    /**
-     * JSON Raw data
-     */
     public static final String DATA = "data";
 
-    /**
-     * Last Modified
-     */
     public static final String LAST_MODIFIED = "last_modified";
 
-    /**
-     * User id
-     */
     public static final String USER_ID = "user_id";
 
-    /**
-     * MD5 hash of data
-     */
     public static final String MD5 = "md5";
 
 

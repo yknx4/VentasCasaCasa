@@ -33,22 +33,12 @@ import android.net.Uri;
 
 import com.arekar.android.ventascasacasa.provider.jsondataprovider.base.AbstractSelection;
 
-/**
- * Selection for the {@code json} table.
- */
 public class JsonSelection extends AbstractSelection<JsonSelection> {
     @Override
     protected Uri baseUri() {
         return JsonColumns.CONTENT_URI;
     }
 
-    /**
-     * Query the given content resolver using this selection.
-     *
-     * @param contentResolver The content resolver to query.
-     * @param projection A list of which columns to return. Passing null will return all columns, which is inefficient.
-     * @return A {@code JsonCursor} object, which is positioned before the first entry, or null.
-     */
     public JsonCursor query(ContentResolver contentResolver, String[] projection) {
         Cursor cursor = contentResolver.query(uri(), projection, sel(), args(), order());
         if (cursor == null) return null;
@@ -57,29 +47,16 @@ public class JsonSelection extends AbstractSelection<JsonSelection> {
 
 
 
-    /**
-     * Equivalent of calling {@code query(contentResolver, null)}.
-     */
     public JsonCursor query(ContentResolver contentResolver) {
         return query(contentResolver, null);
     }
 
-    /**
-     * Query the given content resolver using this selection.
-     *
-     * @param context The context to use for the query.
-     * @param projection A list of which columns to return. Passing null will return all columns, which is inefficient.
-     * @return A {@code JsonCursor} object, which is positioned before the first entry, or null.
-     */
     public JsonCursor query(Context context, String[] projection) {
         Cursor cursor = context.getContentResolver().query(uri(), projection, sel(), args(), order());
         if (cursor == null) return null;
         return new JsonCursor(cursor);
     }
 
-    /**
-     * Equivalent of calling {@code query(context, null)}.
-     */
     public JsonCursor query(Context context) {
         return query(context, null);
     }
