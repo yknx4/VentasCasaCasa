@@ -45,7 +45,7 @@ public class SaleController {
      * @return the sale controller
      */
     public static SaleController with(Sale item){
-
+        Log.d(TAG,"SaleController for "+item.getId());
         return new SaleController(item);
     }
 
@@ -111,6 +111,12 @@ public class SaleController {
         return val;
     }
 
+    private Date getLastPaymentDate(){
+        Payment lastP = payments.getLastPayment(item.getId());
+        if(lastP!= null)return new Date(Long.parseLong(lastP.getDate()));
+        return new Date(Long.parseLong(item.getDate()));
+    }
+
 
     /**
      * Get next payment date.
@@ -118,26 +124,35 @@ public class SaleController {
      * @return the date
      */
     public Date getNextPayment(){
+
+        ///GET DAYS BETWEEN NOW AND LAST PAYMENT
         Date firstDay = new Date(Long.parseLong(item.getDate()));
         Date currentDate = new Date();
         ReadableInstant first = new Instant(firstDay.getTime());
         ReadableInstant current = new Instant(currentDate.getTime());
+
         int daysBetween = Days.daysBetween(first,current).getDays();
+
+        ///GET CLOSEST DAY FROM NOW TO NEXT PAYMENT
         daysBetween %= item.getPaymentDue();
         Calendar cal = Calendar.getInstance();
+
         /*CLEAN*/
         cal.set(Calendar.HOUR,1);
         cal.set(Calendar.MINUTE,0);
         cal.set(Calendar.SECOND,0);
         cal.set(Calendar.MILLISECOND,0);
         /*CLEAN*/
-        cal.add(Calendar.DAY_OF_YEAR,daysBetween);
+
+        cal.add(Calendar.DATE,daysBetween);
         int closestDate = getClosestDayCount(cal.get(Calendar.DAY_OF_WEEK),item.getAvailableDays());
-        cal.add(Calendar.DAY_OF_YEAR,closestDate);
+
+        ///ADD CLOSEST DATE TO DAY
+        cal.add(Calendar.DATE,closestDate);
+
+
         if(payments!=null){
-            Payment last = payments.getLastPayment(item.getId());
-            Long dateMs = Long.valueOf(last.getDate());
-            Date lDate = new Date(dateMs);
+            Date lDate = getLastPaymentDate();
             Calendar lCal = Calendar.getInstance();
             lCal.setTime(lDate);
             /*CLEAN*/
@@ -149,9 +164,9 @@ public class SaleController {
             Log.d(TAG,"Difference: "+(cal.getTimeInMillis()-lCal.getTimeInMillis()));
             if(cal.getTimeInMillis()==lCal.getTimeInMillis()){
                 Log.d(TAG,"Paid already done today. Next is...");
-                cal.add(Calendar.DAY_OF_YEAR,daysBetween);
+                cal.add(Calendar.DATE,daysBetween);
                 int closestDateAgain = getClosestDayCount(cal.get(Calendar.DAY_OF_WEEK),item.getAvailableDays());
-                cal.add(Calendar.DAY_OF_YEAR,closestDateAgain);
+                cal.add(Calendar.DATE,closestDateAgain);
             }
         }
         return cal.getTime();
