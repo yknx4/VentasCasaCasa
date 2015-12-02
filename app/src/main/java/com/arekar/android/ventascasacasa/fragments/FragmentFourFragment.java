@@ -5,17 +5,23 @@ import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+
+import com.arekar.android.ventascasacasa.R;
+import com.bumptech.glide.Glide;
 
 public class FragmentFourFragment extends Fragment
 {
   public View onCreateView(LayoutInflater paramLayoutInflater, ViewGroup paramViewGroup, Bundle paramBundle)
   {
-    return paramLayoutInflater.inflate(2130968615, paramViewGroup, false);
+    return paramLayoutInflater.inflate(R.layout.fragment_four, paramViewGroup, false);
   }
 
   public void onViewCreated(View paramView, Bundle paramBundle)
   {
     super.onViewCreated(paramView, paramBundle);
+
+    Glide.with(this).load("http://lorempixel.com/256/256/people/").crossFade().into((ImageView) paramView.findViewById(R.id.client_image));
   }
 }
 

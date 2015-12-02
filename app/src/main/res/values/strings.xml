@@ -173,4 +173,5 @@
     </string>
     <string name="action_client">Choose an action for client</string>
     <string name="action_product">Choose an action for product</string>
+    <string name="string_today">Today</string>
 </resources>

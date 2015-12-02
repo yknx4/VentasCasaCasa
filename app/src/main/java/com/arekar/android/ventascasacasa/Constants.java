@@ -42,6 +42,7 @@ public abstract class Constants {
         public static String PATH_PRODUCTS = "/product";
         public static String PATH_CLIENTS = "/client";
         public static String PATH_PAYMENTS = "/payment";
+        public static String PATH_USER = "/user";
 
     }
 }

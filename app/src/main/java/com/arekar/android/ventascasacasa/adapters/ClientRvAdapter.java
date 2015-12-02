@@ -154,10 +154,10 @@ public class ClientRvAdapter extends AbstractAdapter<ClientRvAdapter.ClientViewH
             this.cardViewClient = ((CardView)paramView.findViewById(R.id.card_view_client));
             this.clientImage = ((ImageView)paramView.findViewById(R.id.client_image));
             this.clientName = ((TextView)paramView.findViewById(R.id.client_name));
-            this.clientAddress = ((TextView)paramView.findViewById(R.id.client_address));
+            this.clientAddress = ((TextView)paramView.findViewById(R.id.next_payment));
             this.buttonLayout = ((LinearLayout)paramView.findViewById(R.id.button_layout));
             this.locationButton = ((ImageButton)paramView.findViewById(R.id.location_button));
-            this.emailButton = ((ImageButton)paramView.findViewById(R.id.email_button));
+            this.emailButton = ((ImageButton)paramView.findViewById(R.id.pay_button));
             this.callButton = ((ImageButton)paramView.findViewById(R.id.call_button));
             cardViewClient.setOnCreateContextMenuListener(this);
         }
