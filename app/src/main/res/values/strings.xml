@@ -174,4 +174,8 @@
     <string name="action_client">Choose an action for client</string>
     <string name="action_product">Choose an action for product</string>
     <string name="string_today">Today</string>
+    <string name="input_signup">Sign Up</string>
+    <string name="input_email">Email</string>
+    <string name="input_hint">Email</string>
+    <string name="empty" />
 </resources>

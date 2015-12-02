@@ -3,6 +3,7 @@ package com.arekar.android.ventascasacasa.activities;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Message;
@@ -20,6 +21,7 @@ import android.os.AsyncTask;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -35,12 +37,17 @@ import android.widget.Toast;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.arekar.android.ventascasacasa.R;
+import com.arekar.android.ventascasacasa.model.User;
 import com.arekar.android.ventascasacasa.provider.jsondataprovider.json.JsonSelection;
 import com.arekar.android.ventascasacasa.rest.LoginSpiceRequest;
 import com.arekar.android.ventascasacasa.rest.LoginValidateSpiceRequest;
+import com.arekar.android.ventascasacasa.rest.SignUpSpiceRequest;
+import com.google.gson.Gson;
 import com.google.gson.JsonObject;
 
 import static android.Manifest.permission.READ_CONTACTS;
@@ -55,6 +62,7 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
      */
     private static final int REQUEST_READ_CONTACTS = 0;
     private UserLoginTask mAuthTask = null;
+    private UserSignUp mSignUpTask = null;
 
     // UI references.
     private AutoCompleteTextView mUsernameView;
@@ -90,9 +98,81 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
             }
         });
 
+        Button mSignUpButton = (Button) findViewById(R.id.sign_up_button);
+        mSignUpButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                attemptSignUp();
+            }
+        });
+
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
     }
+
+    private void attemptSignUp() {
+        // Reset errors.
+        mUsernameView.setError(null);
+        mPasswordView.setError(null);
+
+        // Store values at the time of the login attempt.
+        String email = mUsernameView.getText().toString();
+        String password = mPasswordView.getText().toString();
+
+        boolean cancel = false;
+        View focusView = null;
+
+        // Check for a valid password, if the user entered one.
+        if (!TextUtils.isEmpty(password) && !isPasswordValid(password)) {
+            mPasswordView.setError(getString(R.string.error_invalid_password));
+            focusView = mPasswordView;
+            cancel = true;
+        }
+
+        // Check for a valid email address.
+        if (TextUtils.isEmpty(email)) {
+            mUsernameView.setError(getString(R.string.error_field_required));
+            focusView = mUsernameView;
+            cancel = true;
+        } else if (!isEmailValid(email)) {
+            mUsernameView.setError(getString(R.string.error_invalid_email));
+            focusView = mUsernameView;
+            cancel = true;
+        }
+
+        if (cancel) {
+            // There was an error; don't attempt login and focus the first
+            // form field with an error.
+            focusView.requestFocus();
+        } else {
+            new MaterialDialog.Builder(this)
+                    .title(R.string.input_signup)
+                    .content(R.string.input_email)
+                    .inputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS)
+                    .input(R.string.input_hint, R.string.empty, new MaterialDialog.InputCallback() {
+                        @Override
+                        public void onInput(MaterialDialog dialog, CharSequence input) {
+                            if(dialog.isCancelled()) return;
+                            String email = input.toString();
+                            if(isRealEmailValid(email)){
+                                User sUser = new User();
+                                sUser.setEmail(email);
+                                sUser.setCreated(new Date().getTime());
+                                sUser.setUser(mUsernameView.getEditableText().toString());
+                                sUser.setPassword(mPasswordView.getText().toString());
+                                mSignUpTask = new UserSignUp(sUser);
+                                mSignUpTask.execute((Void)null);
+                            }
+                            else {
+                                Toast.makeText(getApplicationContext(),"Please put a valid email",Toast.LENGTH_SHORT).show();
+                            }
+                        }
+                    }).show();
+        }
+
+    }
+
 
     @Override
     public Messenger getMessenger() {
@@ -204,6 +284,11 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         //TODO: Replace this with your own logic
         //return email.contains("@");
         return true;
+    }
+    private boolean isRealEmailValid(String email) {
+        //TODO: Replace this with your own logic
+        return email.contains("@");
+
     }
 
     private boolean isPasswordValid(String password) {
@@ -377,6 +462,42 @@ public class LoginActivity extends BaseActivity implements LoaderCallbacks<Curso
         protected void onCancelled() {
             mAuthTask = null;
             showProgress(false);
+        }
+    }
+
+    private class UserSignUp extends AsyncTask<Void,Void,User> {
+
+        final User mUser;
+        final String originalPass;
+
+        public UserSignUp(User mUser){
+            this.mUser = mUser;
+            originalPass = mUser.getPassword();
+        }
+
+        @Override
+        protected User doInBackground(Void... params) {
+            User result = null;
+            try {
+                SignUpSpiceRequest signUp = new SignUpSpiceRequest();
+                result = new Gson().fromJson(signUp.signUp(mUser),User.class);
+            }
+            catch (Exception e){
+                e.printStackTrace();
+            }
+
+            return result;
+        }
+
+        @Override
+        protected void onPostExecute(User jsonObject) {
+            if(jsonObject==null){
+                Toast.makeText(getApplicationContext(), "Sign up failed. Try Again",Toast.LENGTH_SHORT).show();
+                return;
+            }
+            showProgress(true);
+            mAuthTask = new UserLoginTask(jsonObject.getUser(),originalPass);
+            mAuthTask.execute((Void) null);
         }
     }
 }
