@@ -14,7 +14,7 @@ import org.apache.commons.lang3.builder.ToStringBuilder;
  * The type Sale.
  * This represents a sale in the Web Service
  */
-public class Sale extends AbstractItem {
+public class Sale extends AbstractItem implements Comparable<Sale> {
 
   @Expose
   @SerializedName("available_days")
@@ -291,11 +291,6 @@ public class Sale extends AbstractItem {
     this.products = products;
   }
 
-  public String toString()
-  {
-    return ToStringBuilder.reflectionToString(this);
-  }
-
   /**
    * With available days sale.
    *
@@ -489,6 +484,29 @@ public class Sale extends AbstractItem {
       return new Sale[size];
     }
   };
+
+  @Override
+  public int compareTo(Sale another) {
+    Long thisDate = Long.parseLong(getDate());
+    Long anotherDate = Long.parseLong(another.getDate());
+    if(thisDate>anotherDate)
+      return 1;
+    if(thisDate<anotherDate)
+      return -1;
+    else
+      return 0;
+  }
+
+  @Override
+  public String toString() {
+    return "Sale{" +
+            "clientId='" + clientId + '\'' +
+            ", date='" + date + '\'' +
+            ", paymentCost=" + paymentCost +
+            ", paymentDue=" + paymentDue +
+            ", price=" + price +
+            '}';
+  }
 }
 
 /* Location:           D:\Apps\Apk2Java\tools\classes-dex2jar.jar

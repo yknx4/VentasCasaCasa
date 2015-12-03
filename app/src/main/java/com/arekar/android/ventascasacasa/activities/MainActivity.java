@@ -22,8 +22,12 @@ import com.arekar.android.ventascasacasa.R;
 import com.arekar.android.ventascasacasa.adapters.ViewPagerAdapter;
 import com.arekar.android.ventascasacasa.fragments.ClientsFragment;
 import com.arekar.android.ventascasacasa.fragments.FragmentFourFragment;
+import com.arekar.android.ventascasacasa.fragments.NotificationsFragment;
 import com.arekar.android.ventascasacasa.fragments.ProductsFragment;
+import com.arekar.android.ventascasacasa.helpers.Methods;
+import com.arekar.android.ventascasacasa.model.Payment;
 import com.arekar.android.ventascasacasa.service.SyncDataService;
+import com.google.gson.Gson;
 
 public class MainActivity extends BaseActivity {
 
@@ -64,7 +68,6 @@ public class MainActivity extends BaseActivity {
         final Context ctx = this;
         this.fab.setOnClickListener(new View.OnClickListener() {
             public void onClick(View paramView) {
-//                Snackbar.make(coordinatorLayout, "Clients", Snackbar.LENGTH_SHORT).show();
                 Intent intent = new Intent(ctx, AddClientActivity.class);
                 startActivity(intent);
             }
@@ -141,7 +144,7 @@ public class MainActivity extends BaseActivity {
     {
 
         ViewPagerAdapter localViewPagerAdapter = new ViewPagerAdapter(getSupportFragmentManager());
-        localViewPagerAdapter.addFragment(new FragmentFourFragment(), "TWO");
+        localViewPagerAdapter.addFragment(new NotificationsFragment(), "TWO");
         localViewPagerAdapter.addFragment(new ClientsFragment(), "THREE");
         localViewPagerAdapter.addFragment(new ProductsFragment(), "FOUR");
         paramViewPager.setAdapter(localViewPagerAdapter);
@@ -174,13 +177,39 @@ public class MainActivity extends BaseActivity {
             setupActivityState(savedInstanceState);
     }
 
+    IncomingHandler paymentServiceHandler = new IncomingHandler(this);
+
     @Override
     public Messenger getMessenger() {
-        return null;
+        return new Messenger(paymentServiceHandler);
     }
 
     @Override
     public void handleMessage(Message msg) {
+        if (msg == null) return;
+        Bundle data = msg.getData();
+        String type = data.getString(SyncDataService.MSG_PARAM_TYPE);
+        if (type == null) return;
+
+        switch (type) {
+            case SyncDataService.MSG_TYPE_PAYMENT:
+                Boolean paid = data.getBoolean(SyncDataService.MSG_ADDED, false);
+                String msgtxt = data.getString("message");
+                String snackText = msgtxt;
+                if (paid) {
+                    Payment nPay = new Gson().fromJson(data.getString("json"),Payment.class);
+                    //Double amount = data.getDouble("amount");
+                    Double amount = nPay.getPrice();
+                    snackText = "Paid " + Methods.getMoneyString(amount) + "";
+                    SyncDataService.startActionFetchPayments(this);
+                }
+                Snackbar snack = Snackbar.make(coordinatorLayout, snackText, Snackbar.LENGTH_SHORT);
+
+                snack.show();
+                Log.v(TAG, msgtxt);
+                break;
+        }
+
 
     }
 

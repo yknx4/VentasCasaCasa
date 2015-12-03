@@ -1,6 +1,7 @@
 package com.arekar.android.ventascasacasa.adapters;
 
 import android.os.Messenger;
+import android.provider.SyncStateContract;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.text.InputType;
@@ -9,6 +10,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageButton;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.afollestad.materialdialogs.DialogAction;
@@ -16,15 +18,22 @@ import com.afollestad.materialdialogs.MaterialDialog;
 import com.arekar.android.ventascasacasa.R;
 import com.arekar.android.ventascasacasa.activities.BaseActivity;
 import com.arekar.android.ventascasacasa.controllers.SaleController;
+import com.arekar.android.ventascasacasa.helpers.ClientJsonHandler;
+import com.arekar.android.ventascasacasa.helpers.Methods;
 import com.arekar.android.ventascasacasa.helpers.PaymentsJsonHandler;
+import com.arekar.android.ventascasacasa.model.AddressGPS;
+import com.arekar.android.ventascasacasa.model.Client;
 import com.arekar.android.ventascasacasa.model.Sale;
 import com.arekar.android.ventascasacasa.service.SyncDataService;
+import com.bumptech.glide.Glide;
 import com.google.gson.Gson;
 import com.google.gson.JsonArray;
 import com.google.gson.reflect.TypeToken;
 
 import java.lang.ref.WeakReference;
 import java.lang.reflect.Type;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -49,6 +58,11 @@ public class NotificationsRvAdapter extends RecyclerView.Adapter<NotificationsRv
     }
 
     PaymentsJsonHandler paymentsJsonHandler = null;
+    ClientJsonHandler clientJsonHandler = null;
+
+    public void setClientJsonHandler(ClientJsonHandler clientJsonHandler){
+        this.clientJsonHandler = clientJsonHandler;
+    }
 
     public NotificationsRvAdapter(JsonArray paramJsonArray)
     {
@@ -70,7 +84,7 @@ public class NotificationsRvAdapter extends RecyclerView.Adapter<NotificationsRv
 
     @Override
     public NotificationViewHolder onCreateViewHolder(ViewGroup paramViewGroup, int viewType) {
-        Log.d(TAG,"onCreateViewHolder()");
+        Log.d(TAG, "onCreateViewHolder()");
         int viewPaid = R.layout.sale_item;
         int viewPaidPayments = R.layout.sale_item;
         int viewOnPayments = R.layout.sale_item;
@@ -88,7 +102,7 @@ public class NotificationsRvAdapter extends RecyclerView.Adapter<NotificationsRv
                 break;
         }
         Log.d(TAG,"Inflating view");
-        return  new NotificationViewHolder(LayoutInflater.from(paramViewGroup.getContext()).inflate(chosenView, paramViewGroup, false));
+        return  new NotificationViewHolder(LayoutInflater.from(paramViewGroup.getContext()).inflate(R.layout.notification_item, paramViewGroup, false));
 
     }
 
@@ -116,8 +130,27 @@ public class NotificationsRvAdapter extends RecyclerView.Adapter<NotificationsRv
         if(paymentsJsonHandler!=null){
             saleController = saleController.payments(paymentsJsonHandler);
         }
-        holder.txtTotalCost.setText(String.format(holder.txtTotalCost.getContext().getString(R.string.msg_txt_total), saleController.getTotalCostString()));
-        holder.txtRemaining.setText(saleController.getRemainingString());
+        final Client localClient = clientJsonHandler.getById(cr.getClientId());
+
+        Glide.with(holder.clientImage.getContext()).load(localClient.getImage()).crossFade().into(holder.clientImage);
+        holder.locationButton.setOnClickListener(new View.OnClickListener() {
+            public void onClick(View paramView) {
+                AddressGPS localAddressGPS = localClient.getAddressGPS();
+                Methods.launchGoogleMaps(paramView.getContext(), localAddressGPS.getLatitude().doubleValue(), localAddressGPS.getLongitude().doubleValue(), localClient.getName());
+            }
+        });
+        holder.callButton.setOnClickListener(new View.OnClickListener()
+        {
+            public void onClick(View paramView)
+            {
+                Methods.makeCall(paramView.getContext(), localClient.getPhone());
+            }
+        });
+
+        holder.clientName.setText(localClient.getName()+ " - "+ Methods.getMoneyString(cr.getPaymentCost()));
+
+
+        holder.txtTotalCost.setText("Remaining: "+saleController.getRemainingString());
         String nextPay = holder.txtNextPayment.getContext().getString(R.string.msg_next_payment)+saleController.getNextPaymentString(holder.txtNextPayment.getContext());
         holder.txtNextPayment.setText(nextPay);
         final MaterialDialog dialog = new MaterialDialog.Builder(holder.btnPayment.getContext())
@@ -174,14 +207,16 @@ public class NotificationsRvAdapter extends RecyclerView.Adapter<NotificationsRv
     @Override
     public int getItemViewType(int position) {
         Log.d(TAG, "getItemViewType()");
-        Sale cr = data.get(position);
-        if(!cr.getMultiplePayments()){
-            if(cr.getPaid())
-                return TYPE_PAID_PAYMENTS;
-            else
-                return TYPE_ON_PAYMENTS;
-        }
-        return TYPE_PAID;
+        return TYPE_ON_PAYMENTS;
+
+//        Sale cr = data.get(position);
+//        if(!cr.getMultiplePayments()){
+//            if(cr.getPaid())
+//                return TYPE_PAID_PAYMENTS;
+//            else
+//                return TYPE_ON_PAYMENTS;
+//        }
+//        return TYPE_PAID;
     }
 
     public void onViewRecycled(NotificationViewHolder paramProductViewHolder)
@@ -194,19 +229,47 @@ public class NotificationsRvAdapter extends RecyclerView.Adapter<NotificationsRv
         return data.size();
     }
 
+    public void sortByNextPayment() {
+        if(paymentsJsonHandler==null) return;
+        Collections.sort(data, new Comparator<Sale>() {
+            @Override
+            public int compare(Sale lhs, Sale rhs) {
+                SaleController lhsc = SaleController.with(lhs).payments(paymentsJsonHandler);
+                SaleController rhsc = SaleController.with(rhs).payments(paymentsJsonHandler);
+
+                Long thisDate = lhsc.getNextPayment().getTime();
+                Long anotherDate = rhsc.getNextPayment().getTime();
+                if(thisDate>anotherDate)
+                    return 1;
+                if(thisDate<anotherDate)
+                    return -1;
+                else
+                    return 0;
+            }
+
+
+        });
+    }
+
     public class NotificationViewHolder extends RecyclerView.ViewHolder{
         private CardView cardViewClient;
-        private TextView txtRemaining;
         private TextView txtTotalCost;
         private TextView txtNextPayment;
         private ImageButton btnPayment;
+        private ImageButton locationButton;
+        private ImageButton callButton;
+        private ImageView clientImage;
+        private TextView clientName;
         public NotificationViewHolder(View convertView) {
             super(convertView);
             cardViewClient = (CardView) convertView.findViewById(R.id.card_view_client);
-            txtRemaining = (TextView) convertView.findViewById(R.id.txt_remaining);
-            txtTotalCost = (TextView) convertView.findViewById(R.id.txt_total_cost);
-            txtNextPayment = (TextView) convertView.findViewById(R.id.txt_next_payment);
-            btnPayment = (ImageButton) convertView.findViewById(R.id.btn_payment);
+            txtTotalCost = (TextView) convertView.findViewById(R.id.payment_amount);
+            txtNextPayment = (TextView) convertView.findViewById(R.id.next_payment);
+            btnPayment = (ImageButton) convertView.findViewById(R.id.pay_button);
+            locationButton = ((ImageButton)convertView.findViewById(R.id.location_button));
+            callButton = ((ImageButton)convertView.findViewById(R.id.call_button));
+           clientImage = ((ImageView)convertView.findViewById(R.id.client_image));
+            clientName = ((TextView)convertView.findViewById(R.id.client_name));
         }
     }
 }

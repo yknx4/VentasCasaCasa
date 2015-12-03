@@ -9,6 +9,7 @@ import com.arekar.android.ventascasacasa.helpers.PaymentsJsonHandler;
 import com.arekar.android.ventascasacasa.model.Payment;
 import com.arekar.android.ventascasacasa.model.Sale;
 import com.google.api.client.util.DateTime;
+import com.koushikdutta.ion.LoadDeepZoom;
 
 import net.danlew.android.joda.JodaTimeAndroid;
 
@@ -126,6 +127,7 @@ public class SaleController {
      */
     public Date getNextPayment(){
 
+        Log.d(TAG,"Current "+item.toString());
         Date firstDay = cleanDate(new Date(Long.parseLong(item.getDate())));
         Log.d(TAG,"First Date "+firstDay.toString());
         Date currentDate = cleanDate(new Date());
@@ -152,6 +154,7 @@ public class SaleController {
         /////END SPECIAL CASE
 
         while (calFinalDate.before(calCurrentDate)){
+            Log.d(TAG,"Adding "+item.getPaymentDue()+" days.");
             calFinalDate.add(Calendar.DATE, item.getPaymentDue());
         }
 
@@ -162,13 +165,14 @@ public class SaleController {
         int closestDate = getClosestDayCount(calFinalDate.get(Calendar.DAY_OF_WEEK),item.getAvailableDays());
         calFinalDate.add(Calendar.DATE,closestDate);
 
-        while (calFinalDate.before(calCurrentDate)){
-            calFinalDate.add(Calendar.DATE, 1);
-            closestDate = getClosestDayCount(calFinalDate.get(Calendar.DAY_OF_WEEK),item.getAvailableDays());
-            calFinalDate.add(Calendar.DATE,closestDate);
-        }
+//        while (calFinalDate.before(calCurrentDate)){
+//            //Log.d(TAG,"Adding 1 day.");
+//            calFinalDate.add(Calendar.DATE, 1);
+//            closestDate = getClosestDayCount(calFinalDate.get(Calendar.DAY_OF_WEEK),item.getAvailableDays());
+//            calFinalDate.add(Calendar.DATE,closestDate);
+//        }
 
-
+        Log.d(TAG,"Next Date "+calFinalDate.getTime().toString());
         return calFinalDate.getTime();
     }
     Calendar cleanerCalendar = Calendar.getInstance();
