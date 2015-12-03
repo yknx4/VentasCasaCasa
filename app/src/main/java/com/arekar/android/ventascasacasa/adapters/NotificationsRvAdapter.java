@@ -126,6 +126,7 @@ public class NotificationsRvAdapter extends RecyclerView.Adapter<NotificationsRv
     }
 
     private void populateOnPaymentsView(NotificationViewHolder holder, final Sale cr) {
+        holder.cardViewClient.setVisibility(View.VISIBLE);
         SaleController saleController = SaleController.with(cr);
         if(paymentsJsonHandler!=null){
             saleController = saleController.payments(paymentsJsonHandler);
@@ -151,6 +152,7 @@ public class NotificationsRvAdapter extends RecyclerView.Adapter<NotificationsRv
 
 
         holder.txtTotalCost.setText("Remaining: "+saleController.getRemainingString());
+        if(saleController.getRemaining()<=0) holder.cardViewClient.setVisibility(View.GONE);
         String nextPay = holder.txtNextPayment.getContext().getString(R.string.msg_next_payment)+saleController.getNextPaymentString(holder.txtNextPayment.getContext());
         holder.txtNextPayment.setText(nextPay);
         final MaterialDialog dialog = new MaterialDialog.Builder(holder.btnPayment.getContext())

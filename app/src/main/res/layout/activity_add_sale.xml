@@ -86,7 +86,7 @@
                     android:id="@+id/input_days"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Days"
+                    android:hint="@string/days_avail"
                     android:inputType="none"
                     >
                 </EditText>
@@ -113,7 +113,7 @@
                     android:id="@+id/input_time"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:hint="Time"
+                    android:hint="@string/time_avail"
                     android:inputType="none"
                     >
                 </EditText>
@@ -136,14 +136,14 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="numberDecimal"
-                android:hint="When" />
+                android:hint="@string/txt_day_bet_pay" />
         </android.support.design.widget.TextInputLayout>
 
 
         <Button android:id="@+id/btn_signup"
             android:layout_width="fill_parent"
             android:layout_height="wrap_content"
-            android:text="Guardar"
+            android:text="@string/txt_sell"
             android:background="@color/colorPrimary"
             android:layout_marginTop="40dp"
             android:textColor="@android:color/white"/>

@@ -126,55 +126,31 @@ public class SaleController {
      * @return the date
      */
     public Date getNextPayment(){
-
-        Log.d(TAG,"Current "+item.toString());
-        Date firstDay = cleanDate(new Date(Long.parseLong(item.getDate())));
-        Log.d(TAG,"First Date "+firstDay.toString());
-        Date currentDate = cleanDate(new Date());
-        Log.d(TAG,"Current Date "+currentDate.toString());
-//        ReadableInstant first = new Instant(firstDay.getTime());
-//        ReadableInstant current = new Instant(currentDate.getTime());
-//        int daysBetween = Days.daysBetween(first,current).getDays();
-
-
-        Calendar calCurrentDate = Calendar.getInstance();
-        calCurrentDate.setTime(currentDate);
-        ///GET CLOSEST DAY FROM NOW TO NEXT PAYMENT
-//        daysBetween %= item.getPaymentDue();
-        Calendar calFinalDate = Calendar.getInstance();
-        calFinalDate.setTime(firstDay);
-
-        ////SPECIAL CASE
-        if(firstDay.getTime()==currentDate.getTime()){
-            if(cleanDate(getLastPaymentDate()).getTime()==currentDate.getTime()){
-                calFinalDate.add(Calendar.DATE, item.getPaymentDue());
-            }
-            return calFinalDate.getTime();
+        Calendar lastDate = Calendar.getInstance();
+        Calendar now = Calendar.getInstance();
+        now.setTime(new Date());
+        Date lastP = getLastPaymentDate();
+        lastDate.setTime(lastP);
+        if(isSameDate(lastP,new Date())){
+            lastDate.add(Calendar.DATE,item.getPaymentDue());
         }
-        /////END SPECIAL CASE
-
-        while (calFinalDate.before(calCurrentDate)){
-            Log.d(TAG,"Adding "+item.getPaymentDue()+" days.");
-            calFinalDate.add(Calendar.DATE, item.getPaymentDue());
+        while (now.after(lastDate)){
+            lastDate.add(Calendar.DATE,item.getPaymentDue());
         }
-
-        if(cleanDate(getLastPaymentDate()).getTime()==calFinalDate.getTimeInMillis()){
-            calFinalDate.add(Calendar.DATE, item.getPaymentDue());
+        while (!inAvailableDays(lastDate.get(Calendar.DAY_OF_WEEK))){
+            lastDate.add(Calendar.DATE,1);
         }
-
-        int closestDate = getClosestDayCount(calFinalDate.get(Calendar.DAY_OF_WEEK),item.getAvailableDays());
-        calFinalDate.add(Calendar.DATE,closestDate);
-
-//        while (calFinalDate.before(calCurrentDate)){
-//            //Log.d(TAG,"Adding 1 day.");
-//            calFinalDate.add(Calendar.DATE, 1);
-//            closestDate = getClosestDayCount(calFinalDate.get(Calendar.DAY_OF_WEEK),item.getAvailableDays());
-//            calFinalDate.add(Calendar.DATE,closestDate);
-//        }
-
-        Log.d(TAG,"Next Date "+calFinalDate.getTime().toString());
-        return calFinalDate.getTime();
+        //TODO: Ver si es cierto que jala.
+        return lastDate.getTime();
     }
+
+    public boolean inAvailableDays(int number){
+        for(int day:item.getAvailableDays()){
+            if(day==number) return true;
+        }
+        return false;
+    }
+
     Calendar cleanerCalendar = Calendar.getInstance();
     private Date cleanDate(Date inputDate){
         cleanerCalendar.setTime(inputDate);

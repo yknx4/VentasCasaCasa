@@ -251,6 +251,7 @@ public class AddSaleActivity extends BaseActivity implements View.OnClickListene
 
 
     private void doSale() {
+        btn_signup.setEnabled(false);
         Sale newSale = new Sale();
         newSale.setMultiplePayments(true);
         newSale.setDate(String.valueOf(new Date().getTime()));

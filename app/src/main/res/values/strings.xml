@@ -178,4 +178,9 @@
     <string name="input_email">Email</string>
     <string name="input_hint">Email</string>
     <string name="empty" />
+    <string name="txt_day_bet_pay">Days between payments</string>
+    <string name="time_avail">Time available</string>
+    <string name="days_avail">Days available</string>
+    <string name="txt_sell">Sell</string>
+    <string name="txt_save">Save</string>
 </resources>

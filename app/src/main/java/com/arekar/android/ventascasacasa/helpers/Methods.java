@@ -10,6 +10,8 @@ import android.os.Build;
 import android.os.Build.VERSION;
 import android.widget.Toast;
 
+import com.arekar.android.ventascasacasa.Constants;
+
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
@@ -113,14 +115,17 @@ public abstract class Methods
 
   /**
    * Send mail.
-   *
-   * @param paramContext the context
+   *  @param paramContext the context
    * @param paramString  the email address
+   * @param id
    */
-  public static void sendMail(Context paramContext, String paramString)
+  public static void sendMail(Context paramContext, String paramString, String id)
   {
     Intent localIntent = new Intent("android.intent.action.SEND");
     localIntent.putExtra("android.intent.extra.EMAIL", new String[] { paramString });
+    localIntent.putExtra(Intent.EXTRA_HTML_TEXT   , "Please check your purchase history <a href=\""+ Constants.Connections.DETAILS_URL+id+"\"> here</a>.");
+    localIntent.putExtra(Intent.EXTRA_TEXT, "Please check your purchase history here: "+Constants.Connections.DETAILS_URL+id);
+    localIntent.putExtra(Intent.EXTRA_SUBJECT,"Sale It! Payment History");
     localIntent.setType("message/rfc822");
     paramContext.startActivity(Intent.createChooser(localIntent, "Choose an Email client"));
   }

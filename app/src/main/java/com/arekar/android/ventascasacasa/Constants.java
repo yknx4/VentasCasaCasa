@@ -44,5 +44,7 @@ public abstract class Constants {
         public static String PATH_PAYMENTS = "/payment";
         public static String PATH_USER = "/user";
 
+        public static String DETAILS_URL="http://yknx4.github.io/sales/?client_id=";
+
     }
 }

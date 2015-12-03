@@ -91,7 +91,7 @@ public class ClientRvAdapter extends AbstractAdapter<ClientRvAdapter.ClientViewH
         });
         paramClientViewHolder.emailButton.setOnClickListener(new View.OnClickListener() {
             public void onClick(View paramView) {
-                Methods.sendMail(paramView.getContext(), localClient.getEmail());
+                Methods.sendMail(paramView.getContext(), localClient.getEmail(), localClient.getId());
             }
         });
         new AlphaAnimation(0.0F, 1.0F).setDuration(1000L);
